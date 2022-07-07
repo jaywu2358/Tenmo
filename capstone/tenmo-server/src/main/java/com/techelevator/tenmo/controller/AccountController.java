@@ -34,7 +34,8 @@ public class AccountController {
     //Get account balance
     @RequestMapping(path = "/users/{id}")
     public BigDecimal getBalance(@Valid @PathVariable int id) {
-        return accountDao.getBalanceByAccountId(id);
+        return accountDao.getBalanceByUserId(id);
+//        return accountDao.getBalanceByAccountId(id);
     }
 
 

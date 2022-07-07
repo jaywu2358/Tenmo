@@ -3,11 +3,13 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Account;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class JdbcAccountDao implements AccountDao {
 
     private JdbcTemplate jdbcTemplate;
@@ -55,24 +57,28 @@ public class JdbcAccountDao implements AccountDao {
 
         BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, accountId);
 
-        if(balance!= null){
+        if (balance != null){
             return balance;
         } else {
             return BigDecimal.valueOf(-1);
         }
     }
 
-//    public BigDecimal getBalanceByUserId(int userId) {
-//        String sql = "SELECT balance FROM account WHERE user_id = ?;";
-//
-//        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
-//
-//        if(balance!= null){
-//            return balance;
-//        } else {
-//            return BigDecimal.valueOf(-1);
-//        }
-//    }
+    @Override
+    public BigDecimal getBalanceByUserId(int userId) {
+        BigDecimal balance = null;
+        String sql = "SELECT balance FROM account WHERE user_id = ?;";
+
+        balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
+
+        if(balance != null){
+            return balance;
+        } else {
+            return BigDecimal.valueOf(-1);
+        }
+
+    }
+
     @Override
     public void addToBalance(int accountId, int userId, BigDecimal amountReceived) {
 

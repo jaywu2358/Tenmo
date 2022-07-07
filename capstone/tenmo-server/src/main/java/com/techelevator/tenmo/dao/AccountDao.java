@@ -15,7 +15,7 @@ public interface AccountDao {
 
     BigDecimal getBalanceByAccountId(int accountId);
 
-//    BigDecimal getBalanceByUserId(int userId);
+    BigDecimal getBalanceByUserId(int userId);
 
     void addToBalance(int accountId, int userId, BigDecimal amountReceived);
 
