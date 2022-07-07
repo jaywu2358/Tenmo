@@ -14,6 +14,10 @@ public class JdbcAccountDao implements AccountDao {
 
     private JdbcTemplate jdbcTemplate;
 
+    public JdbcAccountDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @Override
     public Account getAccountByAccountId(int accountId) {
         Account account = null;
@@ -66,16 +70,25 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public BigDecimal getBalanceByUserId(int userId) {
-        BigDecimal balance = null;
         String sql = "SELECT balance FROM account WHERE user_id = ?;";
 
-        balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
+        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, 1001);
 
-        if(balance != null){
+        System.out.println(balance);
+
+        if (balance != null){
             return balance;
         } else {
             return BigDecimal.valueOf(-1);
         }
+
+//        balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
+//
+//        if(balance != null){
+//            return balance;
+//        } else {
+//            return BigDecimal.valueOf(-1);
+//        }
 
     }
 

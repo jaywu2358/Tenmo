@@ -26,13 +26,13 @@ public class AccountController {
     }
 
     //List all users
-    @RequestMapping(path = "/users")
+    @RequestMapping(path = "users")
     public List<User> list() {
         return  userDao.findAll();
     }
 
     //Get account balance
-    @RequestMapping(path = "/users/{id}")
+    @RequestMapping(path = "users/{id}")
     public BigDecimal getBalance(@Valid @PathVariable int id) {
         return accountDao.getBalanceByUserId(id);
 //        return accountDao.getBalanceByAccountId(id);
