@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -31,12 +32,17 @@ public class AccountController {
         return  userDao.findAll();
     }
 
-    //Get account balance
+    // User
+    @RequestMapping(path = "mybalance")
+    public BigDecimal getBalance(Principal principal) {
+        return accountDao.getBalanceByUsername(principal.getName());
+    }
+
+    // Admin
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(path = "users/{id}")
     public BigDecimal getBalance(@Valid @PathVariable int id) {
         return accountDao.getBalanceByUserId(id);
-//        return accountDao.getBalanceByAccountId(id);
     }
-
 
 }

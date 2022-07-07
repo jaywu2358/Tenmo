@@ -27,7 +27,6 @@ public class TransferController {
         this.accountDao = accountDao;
     }
 
-
     //List all transfers
     @RequestMapping(path = "transfers")
     public List<Transfer> listAllTransfersForAGivenUser(@RequestParam int userId) {
@@ -45,17 +44,15 @@ public class TransferController {
     @RequestMapping(path = "transfers", method = RequestMethod.POST)
     public Transfer sendTransfer(@RequestBody Transfer transfer) throws InsufficientFundsException {
 
-
-        int senderAccountId = transfer.getAccountFromId();
+        int senderAccountId = transfer.getFromAccountId();
         accountDao.subtractFromBalance(senderAccountId, transfer.getAmount());
 
-        int recipientAccountId = transfer.getAccountToId();
+        int recipientAccountId = transfer.getToAccountId();
         accountDao.addToBalance(recipientAccountId, transfer.getAmount());
 
         transfer = transferDao.sendTransfer(transfer);
 
         // Show new account balance of user/recipient
-
 
         return transfer;
     }

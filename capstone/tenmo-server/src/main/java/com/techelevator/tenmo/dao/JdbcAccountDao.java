@@ -30,15 +30,15 @@ public class JdbcAccountDao implements AccountDao {
         return account;
     }
 
-//    public Account getAccountByUserId(int userId) {
-//        Account account = null;
-//        String sql = "SELECT account_id FROM account WHERE user_id = ?;";
-//        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
-//        if(results.next()) {
-//            account = mapRowToAccount(results);
-//        }
-//        return account;
-//    }
+    public Account getAccountByUserId(int userId) {
+        Account account = null;
+        String sql = "SELECT account_id FROM account WHERE user_id = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        if(results.next()) {
+            account = mapRowToAccount(results);
+        }
+        return account;
+    }
 
     @Override
     public List<Account> listAllAccounts() {
@@ -90,6 +90,16 @@ public class JdbcAccountDao implements AccountDao {
 //        } else {
 //            return BigDecimal.valueOf(-1);
 //        }
+
+    }
+
+    @Override
+    public BigDecimal getBalanceByUsername(String username) {
+        String sql = "SELECT a.balance FROM account a " +
+                "JOIN tenmo_user tu ON tu.user_id = a.user_id " +
+                "WHERE tu.username = ?;";
+
+        return jdbcTemplate.queryForObject(sql, BigDecimal.class, username);
 
     }
 
