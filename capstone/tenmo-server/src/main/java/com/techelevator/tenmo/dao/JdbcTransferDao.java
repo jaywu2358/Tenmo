@@ -29,9 +29,10 @@ public class JdbcTransferDao implements  TransferDao {
     @Override
     public Transfer getTransferDetailsById(int transferId) {
         Transfer transfer = null;
-        String sql = "SELECT * FROM transfer WHERE transfer_id = ?;";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql,transferId);
-        if(results.next()){
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
+                "FROM transfer WHERE transfer_id = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
+        if (results.next()) {
             transfer = mapRowToTransfer(results);
         }
         return transfer;
@@ -39,14 +40,13 @@ public class JdbcTransferDao implements  TransferDao {
 
     @Override
     public List<Transfer> listAllTransfers(int userId) {
-        //List<Transfer> transfers = new ArrayList<>();
         List<Transfer> transfers = new ArrayList<>();
         String sql = "SELECT t.transfer_id, tu.username, t.amount FROM transfer t " +
                 "JOIN account a ON a.account_id = t.account_from JOIN tenmo_user tu ON a.user_id = tu.user_id " +
-                "WHERE t.account_from = ? OR t.account_to = ? RETURNING transfer_id; ";
+                "WHERE t.account_from = ? OR t.account_to = ? RETURNING transfer_id;";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
-        while(results.next()){
+        while (results.next()) {
             transfers.add(mapRowToTransfer(results));
         }
         return transfers;
@@ -59,9 +59,8 @@ public class JdbcTransferDao implements  TransferDao {
 
     @Override
     public Transfer sendTransfer(BigDecimal amountToTransfer, int senderId, int recipientId) {
-        Transfer transfer = null;
         String sql = "INSERT INTO transfer_type(transfer_type_desc) " +
-                    "VALUES('Send') RETURNING transfer_type_id; ";
+                    "VALUES('Send') RETURNING transfer_type_id;";
 
         Integer transferTypeId = jdbcTemplate.queryForObject(sql, Integer.class);
 
@@ -72,7 +71,7 @@ public class JdbcTransferDao implements  TransferDao {
 
 
         sql = "INSERT INTO transfer(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
-                "VALUES(?,?,?,?,?) RETURNING transfer_id; ";
+                "VALUES(?,?,?,?,?) RETURNING transfer_id;";
 
         Integer transferId = jdbcTemplate.queryForObject(sql, Integer.class, transferTypeId, transferStatusId, senderId, recipientId, amountToTransfer);
 
