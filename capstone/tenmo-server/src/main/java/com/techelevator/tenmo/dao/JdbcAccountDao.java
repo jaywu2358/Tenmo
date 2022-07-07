@@ -12,6 +12,7 @@ public class JdbcAccountDao implements AccountDao {
 
     private JdbcTemplate jdbcTemplate;
 
+    @Override
     public Account getAccountByAccountId(int accountId) {
         Account account = null;
         String sql = "SELECT account_id FROM account WHERE account_id = ?;";
@@ -32,6 +33,7 @@ public class JdbcAccountDao implements AccountDao {
 //        return account;
 //    }
 
+    @Override
     public List<Account> listAllAccounts() {
         List<Account> accounts = new ArrayList<>();
 
@@ -46,6 +48,7 @@ public class JdbcAccountDao implements AccountDao {
         return accounts;
     }
 
+    @Override
     public BigDecimal getBalanceByAccountId(int accountId) {
 
         String sql = "SELECT balance FROM account WHERE account_id = ?;";
@@ -59,16 +62,35 @@ public class JdbcAccountDao implements AccountDao {
         }
     }
 
-    public BigDecimal getBalanceByUserId(int userId) {
-        String sql = "SELECT balance FROM account WHERE user_id = ?;";
+//    public BigDecimal getBalanceByUserId(int userId) {
+//        String sql = "SELECT balance FROM account WHERE user_id = ?;";
+//
+//        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
+//
+//        if(balance!= null){
+//            return balance;
+//        } else {
+//            return BigDecimal.valueOf(-1);
+//        }
+//    }
+    @Override
+    public void addToBalance(int accountId, int userId, BigDecimal amountReceived) {
 
-        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
+        String sql = "UPDATE account " +
+                    "SET balance = balance + ? " +
+                    "WHERE account_id = ? AND user_id = ?; ";
+        jdbcTemplate.update(sql,accountId,userId,amountReceived);
 
-        if(balance!= null){
-            return balance;
-        } else {
-            return BigDecimal.valueOf(-1);
-        }
+    }
+
+    @Override
+    public void subtractFromBalance(int accountId, int userId, BigDecimal amountToSend) {
+
+        String sql = "UPDATE account " +
+                "SET balance = balance - ? " +
+                "WHERE account_id = ? AND user_id = ?; ";
+        jdbcTemplate.update(sql,accountId,userId,amountToSend);
+
     }
 
     private Account mapRowToAccount(SqlRowSet rowSet) {

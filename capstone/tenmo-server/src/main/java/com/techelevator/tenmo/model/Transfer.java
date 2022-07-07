@@ -9,18 +9,18 @@ public class Transfer {
     private int transferStatusId;
     private int accountFromId;
     private int accountToId;
-    private String accountFromUsername;
-    private String accountToUsername;
+//    private String accountFromUsername;
+//    private String accountToUsername;
     private BigDecimal amount;
 
-    public Transfer(int transferId, int transferTypeId, int transferStatusId, int accountFromId, int accountToId, String accountFromUsername, String accountToUsername, BigDecimal amount) {
+    public Transfer(int transferId, int transferTypeId, int transferStatusId, int accountFromId, int accountToId, BigDecimal amount) {
         this.transferId = transferId;
         this.transferTypeId = transferTypeId;
         this.transferStatusId = transferStatusId;
         this.accountFromId = accountFromId;
         this.accountToId = accountToId;
-        this.accountFromUsername = accountFromUsername;
-        this.accountToUsername = accountToUsername;
+//        this.accountFromUsername = accountFromUsername;
+//        this.accountToUsername = accountToUsername;
         this.amount = amount;
     }
 
@@ -98,8 +98,8 @@ public class Transfer {
                 ", transferStatusId=" + transferStatusId +
                 ", accountFromId=" + accountFromId +
                 ", accountToId=" + accountToId +
-                ", accountFromUsername='" + accountFromUsername + '\'' +
-                ", accountToUsername='" + accountToUsername + '\'' +
+//                ", accountFromUsername='" + accountFromUsername + '\'' +
+//                ", accountToUsername='" + accountToUsername + '\'' +
                 ", amount=" + amount +
                 '}';
     }
