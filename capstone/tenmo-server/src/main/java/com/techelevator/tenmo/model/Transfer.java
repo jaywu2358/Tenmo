@@ -1,5 +1,7 @@
 package com.techelevator.tenmo.model;
 
+import java.math.BigDecimal;
+
 public class Transfer {
 
     private int transferId;
@@ -9,9 +11,9 @@ public class Transfer {
     private int accountToId;
     private String accountFromUsername;
     private String accountToUsername;
-    private double amount;
+    private BigDecimal amount;
 
-    public Transfer(int transferId, int transferTypeId, int transferStatusId, int accountFromId, int accountToId, String accountFromUsername, String accountToUsername, double amount) {
+    public Transfer(int transferId, int transferTypeId, int transferStatusId, int accountFromId, int accountToId, String accountFromUsername, String accountToUsername, BigDecimal amount) {
         this.transferId = transferId;
         this.transferTypeId = transferTypeId;
         this.transferStatusId = transferStatusId;
@@ -21,6 +23,8 @@ public class Transfer {
         this.accountToUsername = accountToUsername;
         this.amount = amount;
     }
+
+    public Transfer() {}
 
     public int getTransferId() {
         return transferId;
@@ -62,27 +66,27 @@ public class Transfer {
         this.accountToId = accountToId;
     }
 
-    public String getAccountFromUsername() {
-        return accountFromUsername;
-    }
+//    public String getAccountFromUsername() {
+//        return accountFromUsername;
+//    }
+//
+//    public void setAccountFromUsername(String accountFromUsername) {
+//        this.accountFromUsername = accountFromUsername;
+//    }
+//
+//    public String getAccountToUsername() {
+//        return accountToUsername;
+//    }
+//
+//    public void setAccountToUsername(String accountToUsername) {
+//        this.accountToUsername = accountToUsername;
+//    }
 
-    public void setAccountFromUsername(String accountFromUsername) {
-        this.accountFromUsername = accountFromUsername;
-    }
-
-    public String getAccountToUsername() {
-        return accountToUsername;
-    }
-
-    public void setAccountToUsername(String accountToUsername) {
-        this.accountToUsername = accountToUsername;
-    }
-
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

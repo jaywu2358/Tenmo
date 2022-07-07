@@ -6,20 +6,20 @@ import java.util.List;
 
 public interface TransferDao {
 
-    List<Transfer> listTransfersByAccount(int accountId);
-    // Should this take in an account object instead?
+//    List<Transfer> listTransfersByAccount(int accountId);
+//    // Should this take in an account object instead?
 
-    Transfer getTransferById(int transferId);
+    Transfer getTransferDetailsById(int transferId);
 
     List<Transfer> listAllTransfers();
 
-    List<Transfer> listPendingTransfers();
+//    List<Transfer> listPendingTransfers();
 
     Transfer sendTransfer(Transfer transfer);
 
-    Transfer requestTransfer(Transfer transfer);
+//    Transfer requestTransfer(Transfer transfer);
 
-    void approveTransfer(boolean isTransferApproved, int TransferId);
-    // Might want to think through this method
+//    void approveTransfer(boolean isTransferApproved, int TransferId);
+//    // Might want to think through this method
 
 }
