@@ -1,14 +1,18 @@
 package com.techelevator.tenmo.controller;
 
+import com.techelevator.tenmo.dao.AccountDao;
+import com.techelevator.tenmo.dao.JdbcAccountDao;
+import com.techelevator.tenmo.dao.JdbcTransferDao;
 import com.techelevator.tenmo.dao.TransferDao;
+import com.techelevator.tenmo.exception.InsufficientFundsException;
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -16,24 +20,44 @@ import java.util.List;
 public class TransferController {
 
     private TransferDao transferDao;
+    private AccountDao accountDao;
 
-    public TransferController(TransferDao transferDao) {
+    public TransferController(TransferDao transferDao, AccountDao accountDao) {
         this.transferDao = transferDao;
+        this.accountDao = accountDao;
     }
 
 
     //List all transfers
-    @RequestMapping(path = "/transfers")
+    @RequestMapping(path = "transfers")
     public List<Transfer> listAllTransfersForAGivenUser(@RequestParam int userId) {
         return transferDao.listAllTransfers(userId);
     }
 
     //Get transfer details by transfer Id
-    @RequestMapping(path = "/transfers/{id}")
+    @RequestMapping(path = "transfers/{id}")
     public Transfer get(@PathVariable int id) {
         return transferDao.getTransferDetailsById(id);
     }
 
     //Send transfer
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @RequestMapping(path = "transfers", method = RequestMethod.POST)
+    public Transfer sendTransfer(@RequestBody Transfer transfer) throws InsufficientFundsException {
+
+
+        int senderAccountId = transfer.getAccountFromId();
+        accountDao.subtractFromBalance(senderAccountId, transfer.getAmount());
+
+        int recipientAccountId = transfer.getAccountToId();
+        accountDao.addToBalance(recipientAccountId, transfer.getAmount());
+
+        transfer = transferDao.sendTransfer(transfer);
+
+        // Show new account balance of user/recipient
+
+
+        return transfer;
+    }
 
 }

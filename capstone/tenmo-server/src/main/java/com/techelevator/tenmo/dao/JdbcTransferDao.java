@@ -29,8 +29,13 @@ public class JdbcTransferDao implements  TransferDao {
     @Override
     public Transfer getTransferDetailsById(int transferId) {
         Transfer transfer = null;
-        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
-                "FROM transfer WHERE transfer_id = ?;";
+        String sql = "SELECT t.transfer_id, t.transfer_type_id, tt.transfer_type_desc, t.transfer_status_id, ts.transfer_status_desc, t.account_from, t.account_to, t.amount " +
+                "FROM transfer t " +
+                "JOIN transfer_type tt " +
+                "ON tt.transfer_type_id = t.transfer_type_id " +
+                "JOIN transfer_status ts " +
+                "ON ts.transfer_status_id = t.transfer_status_id " +
+                "WHERE t.transfer_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
         if (results.next()) {
             transfer = mapRowToTransfer(results);
@@ -41,9 +46,11 @@ public class JdbcTransferDao implements  TransferDao {
     @Override
     public List<Transfer> listAllTransfers(int userId) {
         List<Transfer> transfers = new ArrayList<>();
-        String sql = "SELECT t.transfer_id, tu.username, t.amount FROM transfer t " +
-                "JOIN account a ON a.account_id = t.account_from JOIN tenmo_user tu ON a.user_id = tu.user_id " +
-                "WHERE t.account_from = ? OR t.account_to = ? RETURNING transfer_id;";
+        String sql = "SELECT t.transfer_id, t.transfer_type_id, t.transfer_status_id, t.account_from, t.account_to, t.amount " +
+                "FROM transfer t " +
+                "JOIN account a " +
+                "ON a.account_id = t.account_from OR a.account_id = t.account_to " +
+                "WHERE a.user_id = ?";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
         while (results.next()) {
@@ -58,22 +65,31 @@ public class JdbcTransferDao implements  TransferDao {
 //    }
 
     @Override
-    public Transfer sendTransfer(BigDecimal amountToTransfer, int senderId, int recipientId) {
+    public Transfer sendTransfer(Transfer transfer) {
+
         String sql = "INSERT INTO transfer_type(transfer_type_desc) " +
                     "VALUES('Send') RETURNING transfer_type_id;";
 
-        Integer transferTypeId = jdbcTemplate.queryForObject(sql, Integer.class);
+        int transferTypeId = jdbcTemplate.queryForObject(sql, Integer.class);
+
+        sql = "SELECT transfer_type_desc FROM transfer_type WHERE transfer_type_id = ?;";
+
+        transfer.setTransferTypeMessage(jdbcTemplate.queryForObject(sql, String.class, transferTypeId));
 
         sql = "INSERT INTO transfer_status(transfer_status_desc) " +
                 "VALUES('Approved') RETURNING transfer_status_id; ";
 
-        Integer transferStatusId = jdbcTemplate.queryForObject(sql, Integer.class);
+        int transferStatusId =jdbcTemplate.queryForObject(sql, Integer.class);
 
+        sql = "SELECT transfer_status_desc FROM transfer_status WHERE transfer_status_id = ?;";
+
+        transfer.setTransferStatusMessage(jdbcTemplate.queryForObject(sql, String.class, transferStatusId));
 
         sql = "INSERT INTO transfer(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
-                "VALUES(?,?,?,?,?) RETURNING transfer_id;";
+                "VALUES(?, ?, ?, ?, ?) RETURNING transfer_id;";
 
-        Integer transferId = jdbcTemplate.queryForObject(sql, Integer.class, transferTypeId, transferStatusId, senderId, recipientId, amountToTransfer);
+        Integer transferId = jdbcTemplate.queryForObject(sql, Integer.class, transferTypeId, transferStatusId,
+                transfer.getAccountFromId(), transfer.getAccountToId(), transfer.getAmount());
 
         return getTransferDetailsById(transferId);
     }
@@ -92,8 +108,8 @@ public class JdbcTransferDao implements  TransferDao {
         Transfer transfer = new Transfer();
 
         transfer.setTransferId(rowSet.getInt("transfer_id"));
-        transfer.setTransferTypeId(rowSet.getInt("transfer_type_id"));
-        transfer.setTransferStatusId(rowSet.getInt("transfer_status_id"));
+        transfer.setTransferTypeMessage(rowSet.getString("transfer_type_desc"));
+        transfer.setTransferStatusMessage(rowSet.getString("transfer_status_desc"));
         transfer.setAccountFromId(rowSet.getInt("account_from"));
         transfer.setAccountToId(rowSet.getInt("account_to"));
         transfer.setAmount(rowSet.getBigDecimal("amount"));

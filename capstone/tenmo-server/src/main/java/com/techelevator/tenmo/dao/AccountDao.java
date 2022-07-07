@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.exception.InsufficientFundsException;
 import com.techelevator.tenmo.model.Account;
 
 import java.math.BigDecimal;
@@ -17,8 +18,8 @@ public interface AccountDao {
 
     BigDecimal getBalanceByUserId(int userId);
 
-    void addToBalance(int accountId, int userId, BigDecimal amountReceived);
+    void addToBalance(int accountId, BigDecimal amountReceived);
 
-    void subtractFromBalance(int accountId, int userId, BigDecimal amountToSend);
+    void subtractFromBalance(int accountId, BigDecimal amountToSend) throws InsufficientFundsException;
 
 }

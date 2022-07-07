@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.exception.InsufficientFundsException;
 import com.techelevator.tenmo.model.Account;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -72,7 +73,7 @@ public class JdbcAccountDao implements AccountDao {
     public BigDecimal getBalanceByUserId(int userId) {
         String sql = "SELECT balance FROM account WHERE user_id = ?;";
 
-        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, 1001);
+        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
 
         System.out.println(balance);
 
@@ -93,22 +94,26 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public void addToBalance(int accountId, int userId, BigDecimal amountReceived) {
+    public void addToBalance(int accountId, BigDecimal amountReceived) {
 
         String sql = "UPDATE account " +
                     "SET balance = balance + ? " +
-                    "WHERE account_id = ? AND user_id = ?; ";
-        jdbcTemplate.update(sql,accountId,userId,amountReceived);
+                    "WHERE account_id = ?;";
+        jdbcTemplate.update(sql, amountReceived, accountId);
 
     }
 
     @Override
-    public void subtractFromBalance(int accountId, int userId, BigDecimal amountToSend) {
+    public void subtractFromBalance(int accountId, BigDecimal amountToSend) throws InsufficientFundsException {
 
-        String sql = "UPDATE account " +
-                "SET balance = balance - ? " +
-                "WHERE account_id = ? AND user_id = ?; ";
-        jdbcTemplate.update(sql,accountId,userId,amountToSend);
+        if (getBalanceByAccountId(accountId).compareTo(amountToSend) > 0) {
+            String sql = "UPDATE account " +
+                    "SET balance = balance - ? " +
+                    "WHERE account_id = ?;";
+            jdbcTemplate.update(sql, amountToSend, accountId);
+        } else {
+            throw new InsufficientFundsException();
+        }
 
     }
 

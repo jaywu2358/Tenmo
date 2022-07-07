@@ -5,18 +5,18 @@ import java.math.BigDecimal;
 public class Transfer {
 
     private int transferId;
-    private int transferTypeId;
-    private int transferStatusId;
+    private String transferTypeMessage;
+    private String transferStatusMessage;
     private int accountFromId;
     private int accountToId;
 //    private String accountFromUsername;
 //    private String accountToUsername;
     private BigDecimal amount;
 
-    public Transfer(int transferId, int transferTypeId, int transferStatusId, int accountFromId, int accountToId, BigDecimal amount) {
+    public Transfer(int transferId, String transferTypeMessage, String transferStatusMessage, int accountFromId, int accountToId, BigDecimal amount) {
         this.transferId = transferId;
-        this.transferTypeId = transferTypeId;
-        this.transferStatusId = transferStatusId;
+        this.transferTypeMessage = transferTypeMessage;
+        this.transferStatusMessage = transferTypeMessage;
         this.accountFromId = accountFromId;
         this.accountToId = accountToId;
 //        this.accountFromUsername = accountFromUsername;
@@ -34,20 +34,20 @@ public class Transfer {
         this.transferId = transferId;
     }
 
-    public int getTransferTypeId() {
-        return transferTypeId;
+    public String getTransferTypeMessage() {
+        return transferTypeMessage;
     }
 
-    public void setTransferTypeId(int transferTypeId) {
-        this.transferTypeId = transferTypeId;
+    public void setTransferTypeMessage(String transferTypeMessage) {
+        this.transferTypeMessage = transferTypeMessage;
     }
 
-    public int getTransferStatusId() {
-        return transferStatusId;
+    public String getTransferStatusMessage() {
+        return transferStatusMessage;
     }
 
-    public void setTransferStatusId(int transferStatusId) {
-        this.transferStatusId = transferStatusId;
+    public void setTransferStatusMessage(String transferStatusMessage) {
+        this.transferStatusMessage = transferStatusMessage;
     }
 
     public int getAccountFromId() {
@@ -94,12 +94,10 @@ public class Transfer {
     public String toString() {
         return "Transfer{" +
                 "transferId=" + transferId +
-                ", transferTypeId=" + transferTypeId +
-                ", transferStatusId=" + transferStatusId +
+                ", transferTypeMessage='" + transferTypeMessage + '\'' +
+                ", transferStatusMessage='" + transferStatusMessage + '\'' +
                 ", accountFromId=" + accountFromId +
                 ", accountToId=" + accountToId +
-//                ", accountFromUsername='" + accountFromUsername + '\'' +
-//                ", accountToUsername='" + accountToUsername + '\'' +
                 ", amount=" + amount +
                 '}';
     }

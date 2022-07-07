@@ -16,7 +16,7 @@ public interface TransferDao {
 
 //    List<Transfer> listPendingTransfers();
 
-    Transfer sendTransfer(BigDecimal amountToTransfer, int senderId, int recipientId);
+    Transfer sendTransfer(Transfer transfer);
 
 //    Transfer requestTransfer(BigDecimal amountToRequest);
 
