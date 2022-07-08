@@ -5,22 +5,33 @@ import java.math.BigDecimal;
 public class Transfer {
 
     private int transferId;
-    private String transferTypeMessage;
+    private int transferTypeId;
+    private int transferStatusId;
+    private int accountFromId;
+    private int accountToId;
+//    private String accountFromUsername;
+//    private String accountToUsername;
     private String transferStatusMessage;
-    private String fromUsername;
-    private int fromAccountId;
-    private String toUsername;
-    private int toAccountId;
+    private String transferTypeMessage;
     private BigDecimal amount;
 
-    public Transfer(int transferId, String transferTypeMessage, String transferStatusMessage, String fromUsername, int fromAccountId, String toUsername, int toAccountId, BigDecimal amount) {
+//    public Transfer(int transferId, int transferTypeId, String transferTypeMessage, int transferStatusId, String transferStatusMessage, int accountFromId, int accountToId, BigDecimal amount) {
+//        this.transferId = transferId;
+//        this.transferTypeId = transferTypeId;
+//        this.transferStatusId = transferStatusId;
+//        this.accountFromId = accountFromId;
+//        this.accountToId = accountToId;
+//        this.transferTypeMessage = transferTypeMessage;
+//        this.transferStatusMessage = transferStatusMessage;
+//        this.amount = amount;
+//    }
+
+    public Transfer(int transferId, int transferTypeId, int transferStatusId, int accountFromId, int accountToId, BigDecimal amount) {
         this.transferId = transferId;
-        this.transferTypeMessage = transferTypeMessage;
-        this.transferStatusMessage = transferStatusMessage;
-        this.fromUsername = fromUsername;
-        this.fromAccountId = fromAccountId;
-        this.toUsername = toUsername;
-        this.toAccountId = toAccountId;
+        this.transferTypeId = transferTypeId;
+        this.transferStatusId = transferStatusId;
+        this.accountFromId = accountFromId;
+        this.accountToId = accountToId;
         this.amount = amount;
     }
 
@@ -34,12 +45,16 @@ public class Transfer {
         this.transferId = transferId;
     }
 
-    public String getTransferTypeMessage() {
-        return transferTypeMessage;
+    public int getTransferTypeId() {
+        return transferTypeId;
     }
 
-    public void setTransferTypeMessage(String transferTypeMessage) {
-        this.transferTypeMessage = transferTypeMessage;
+    public void setTransferTypeId(int transferTypeId) {
+        this.transferTypeId = transferTypeId;
+    }
+
+    public int getTransferStatusId() {
+        return transferStatusId;
     }
 
     public String getTransferStatusMessage() {
@@ -50,20 +65,20 @@ public class Transfer {
         this.transferStatusMessage = transferStatusMessage;
     }
 
-    public String getFromUsername() {
-        return fromUsername;
+    public String getTransferTypeMessage() {
+        return transferTypeMessage;
     }
 
-    public int getFromAccountId() {
-        return fromAccountId;
+    public void setTransferTypeMessage(String transferTypeMessage) {
+        this.transferTypeMessage = transferTypeMessage;
     }
 
-    public void setFromAccountId(int fromAccountId) {
-        this.fromAccountId = fromAccountId;
+    public void setTransferStatusId(int transferStatusId) {
+        this.transferStatusId = transferStatusId;
     }
 
-    public void setFromUsername(String fromUsername) {
-        this.fromUsername = fromUsername;
+    public int getAccountFromId() {
+        return accountFromId;
     }
 
     public String getToUsername() {
@@ -78,10 +93,6 @@ public class Transfer {
         return toAccountId;
     }
 
-    public void setToAccountId(int toAccountId) {
-        this.toAccountId = toAccountId;
-    }
-
     public BigDecimal getAmount() {
         return amount;
     }
@@ -94,10 +105,10 @@ public class Transfer {
     public String toString() {
         return "Transfer{" +
                 "transferId=" + transferId +
-                ", transferTypeMessage='" + transferTypeMessage + '\'' +
-                ", transferStatusMessage='" + transferStatusMessage + '\'' +
-                ", fromUsername='" + fromUsername + '\'' +
-                ", toUsername='" + toUsername + '\'' +
+                ", transferTypeId=" + transferTypeId +
+                ", transferStatusId=" + transferStatusId +
+                ", accountFromId=" + accountFromId +
+                ", accountToId=" + accountToId +
                 ", amount=" + amount +
                 '}';
     }

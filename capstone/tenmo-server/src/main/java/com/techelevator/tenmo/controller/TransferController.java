@@ -40,21 +40,30 @@ public class TransferController {
     }
 
     //Send transfer
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "transfers", method = RequestMethod.POST)
     public Transfer sendTransfer(@RequestBody Transfer transfer) throws InsufficientFundsException {
 
-        int senderAccountId = transfer.getFromAccountId();
+        int senderAccountId = transfer.getAccountFromId();
         accountDao.subtractFromBalance(senderAccountId, transfer.getAmount());
 
         int recipientAccountId = transfer.getToAccountId();
         accountDao.addToBalance(recipientAccountId, transfer.getAmount());
 
-        transfer = transferDao.sendTransfer(transfer);
-
-        // Show new account balance of user/recipient
+        transfer = transferDao.createTransfer(transfer);
 
         return transfer;
+    }
+
+    @RequestMapping(path = "transfer/type")
+    public String getTransferTypeDescById(@RequestParam int transferTypeId) {
+        return transferDao.getTransferTypeDescById(transferTypeId);
+    }
+
+
+    @RequestMapping(path = "transfer/status")
+    public String getTransferStatusDescById(@RequestParam int transferStatusId) {
+        return transferDao.getTransferStatusDescById(transferStatusId);
     }
 
 }
