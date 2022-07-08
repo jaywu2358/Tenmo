@@ -13,10 +13,17 @@ public interface TransferDao {
     Transfer getTransferDetailsById(int transferId);
 
     List<Transfer> listAllTransfers(int userId);
-
-//    List<Transfer> listPendingTransfers();
+    Transfer getTransferTypeDescById(int id);
+    Transfer getTransferStatusDescById(int id);
+    List<Transfer> listPendingTransfers(int userId);
 
     Transfer sendTransfer(Transfer transfer);
+
+    //Use for approving or rejecting a request transfer
+    //we don't need to use the two methods below
+    void updateTransferStatus(Transfer transfer);
+
+
 
 //    Transfer requestTransfer(BigDecimal amountToRequest);
 

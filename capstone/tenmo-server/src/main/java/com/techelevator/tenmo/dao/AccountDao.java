@@ -10,13 +10,15 @@ public interface AccountDao {
 
     Account getAccountByAccountId(int accountId);
 
-//    Account getAccountByUserId(int userId);
+    Account getAccountByUserId(int userId);
 
     List<Account> listAllAccounts();
 
     BigDecimal getBalanceByAccountId(int accountId);
 
     BigDecimal getBalanceByUserId(int userId);
+
+    BigDecimal getBalanceByUsername(String username);
 
     void addToBalance(int accountId, BigDecimal amountReceived);
 

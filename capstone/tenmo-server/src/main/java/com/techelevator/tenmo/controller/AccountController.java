@@ -2,6 +2,7 @@ package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.UserDao;
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -32,10 +34,20 @@ public class AccountController {
     }
 
     //Get account balance
-    @RequestMapping(path = "users/{id}")
-    public BigDecimal getBalance(@Valid @PathVariable int id) {
-        return accountDao.getBalanceByUserId(id);
+    @RequestMapping(path = "balance")
+    public BigDecimal getBalance(Principal principal) {
+        return accountDao.getBalanceByUsername(principal.getName());
 //        return accountDao.getBalanceByAccountId(id);
+    }
+
+    @RequestMapping(path = "account/{accountId}")
+    public Account getAccountByAccountId(@PathVariable int accountId) {
+        return accountDao.getAccountByAccountId(accountId);
+    }
+
+    @RequestMapping(path = "account/user/{userId}")
+    public Account getAccountByUserId(@PathVariable int userId) {
+        return accountDao.getAccountByUserId(userId);
     }
 
 
