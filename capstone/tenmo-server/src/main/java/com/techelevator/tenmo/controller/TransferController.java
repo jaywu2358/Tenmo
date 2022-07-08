@@ -29,8 +29,12 @@ public class TransferController {
 
     //List all transfers
     @RequestMapping(path = "transfers")
-    public List<Transfer> listAllTransfersForAGivenUser(@RequestParam int userId) {
-        return transferDao.listAllTransfers(userId);
+    public List<Transfer> listAllTransfersForAGivenUser(@RequestParam int userId, @RequestParam (required = false, defaultValue = "0") int transferStatusId) {
+        if (transferStatusId == 0) {
+            return transferDao.listAllTransfers(userId);
+
+        }
+        return transferDao.listAllTransfers(userId, transferStatusId);
     }
 
     //Get transfer details by transfer Id
@@ -47,7 +51,7 @@ public class TransferController {
         int senderAccountId = transfer.getAccountFromId();
         accountDao.subtractFromBalance(senderAccountId, transfer.getAmount());
 
-        int recipientAccountId = transfer.getToAccountId();
+        int recipientAccountId = transfer.getAccountToId();
         accountDao.addToBalance(recipientAccountId, transfer.getAmount());
 
         transfer = transferDao.createTransfer(transfer);
@@ -59,7 +63,6 @@ public class TransferController {
     public String getTransferTypeDescById(@RequestParam int transferTypeId) {
         return transferDao.getTransferTypeDescById(transferTypeId);
     }
-
 
     @RequestMapping(path = "transfer/status")
     public String getTransferStatusDescById(@RequestParam int transferStatusId) {

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class JdbcTransferDao implements  TransferDao {
+public class JdbcTransferDao implements TransferDao {
 
     private JdbcTemplate jdbcTemplate;
 
@@ -16,26 +16,11 @@ public class JdbcTransferDao implements  TransferDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-//    @Override
-//    public List<Transfer> listTransfersByAccount(int accountId) {
-//        List<Transfer> transfers = new ArrayList<>();
-//        String sql = "SELECT * FROM transfer JOIN ";
-//
-//        return new ArrayList<>();
-//    }
-
     @Override
     public Transfer getTransferDetailsById(int transferId) {
         Transfer transfer = null;
-        String sql = "SELECT t.transfer_id, tt.transfer_type_desc, ts.transfer_status_desc, tu.username AS from_username, t.account_from, tu.username AS to_username, t.account_to, t.amount " +
-                "FROM transfer t " +
-                "JOIN transfer_type tt " +
-                "ON tt.transfer_type_id = t.transfer_type_id " +
-                "JOIN transfer_status ts " +
-                "ON ts.transfer_status_id = t.transfer_status_id " +
-                "JOIN tenmo_user tu " +
-                "ON tu.user_id = t.account_from OR tu.user_id = t.account_to " +
-                "WHERE t.transfer_id = ?;";
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
+            "FROM transfer WHERE transfer_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
         if (results.next()) {
             transfer = mapRowToTransfer(results);
@@ -61,37 +46,33 @@ public class JdbcTransferDao implements  TransferDao {
         String transferStatusDesc = jdbcTemplate.queryForObject(sql, String.class, id);
 
         return transferStatusDesc;
-
     }
 
-
     @Override
-    public List<Transfer> listAllTransfers(int userId) {
+    public List<Transfer> listAllTransfers(int userId, int transferStatusId) {
         List<Transfer> transfers = new ArrayList<>();
-        String sql = "SELECT t.transfer_id, tt.transfer_type_desc, ts.transfer_status_desc, tu.username AS from_username, t.account_from, tu.username AS to_username, t.account_to, t.amount " +
+        String sql = "SELECT t.transfer_id, t.transfer_type_id, t.transfer_status_id, t.account_from, t.account_to, t.amount " +
                 "FROM transfer t " +
-                "JOIN transfer_type tt " +
-                "ON tt.transfer_type_id = t.transfer_type_id " +
-                "JOIN transfer_status ts " +
-                "ON ts.transfer_status_id = t.transfer_status_id " +
-                "JOIN tenmo_user tu " +
-                "ON tu.user_id = t.account_from OR tu.user_id = t.account_to " +
-                "WHERE t.transfer_id = ?;";
+                "JOIN account a " +
+                "ON a.account_id = t.account_from " +
+                "WHERE a.user_id = ? AND t.transfer_status_id = ?;";
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
-        while (results.next()) {
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, transferStatusId);
+        while(results.next()) {
             transfers.add(mapRowToTransfer(results));
         }
+
         return transfers;
     }
 
     @Override
-    public List<Transfer> listPendingTransfers(int userId) {
+    public List<Transfer> listAllTransfers(int userId) {
         List<Transfer> transfers = new ArrayList<>();
-        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
-                    "FROM transfers t JOIN accounts a ON a.account_id = t.account_from " +
-                    "JOIN transfer_status ts ON t.transfer_status_id = ts.transfer_status_id " +
-                    "WHERE user_id = ? AND transfer_status_desc = 'Pending'; ";
+        String sql = "SELECT t.transfer_id, t.transfer_type_id, t.transfer_status_id, t.account_from, t.account_to, t.amount " +
+                "FROM transfer t " +
+                "JOIN account a " +
+                "ON a.account_id = t.account_from " +
+                "WHERE a.user_id = ?";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
         while(results.next()) {
@@ -104,20 +85,10 @@ public class JdbcTransferDao implements  TransferDao {
     @Override
     public Transfer createTransfer(Transfer transfer) {
 
-//        String sql = "INSERT INTO transfer_type(transfer_type_desc) " +
-//                    "VALUES('Send') RETURNING transfer_type_id;";
-//
-//        Integer transferTypeId = jdbcTemplate.queryForObject(sql, Integer.class);
-//
-//        sql = "INSERT INTO transfer_status(transfer_status_desc) " +
-//                "VALUES('Approved') RETURNING transfer_status_id; ";
-//
-//        Integer transferStatusId =jdbcTemplate.queryForObject(sql, Integer.class);
-
         String sql = "INSERT INTO transfer(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                 "VALUES(?, ?, ?, ?, ?) RETURNING transfer_id;";
 
-        Integer transferId = jdbcTemplate.update(sql, Integer.class, transfer.getTransferId(), transfer.getTransferStatusId(),
+        Integer transferId = jdbcTemplate.queryForObject(sql, Integer.class, transfer.getTransferTypeId(), transfer.getTransferStatusId(),
                 transfer.getAccountFromId(), transfer.getAccountToId(), transfer.getAmount());
 
         return getTransferDetailsById(transferId);
@@ -143,12 +114,5 @@ public class JdbcTransferDao implements  TransferDao {
 
         return transfer;
     }
-
-//    private Transfer toStringViewTransfer(SqlRowSet rowSet)
-
-//    private List<String> viewTransfer(Transfer newTransfer) {
-//        List<>
-//
-//    }
 
 }

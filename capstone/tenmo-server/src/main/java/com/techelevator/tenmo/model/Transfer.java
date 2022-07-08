@@ -9,22 +9,7 @@ public class Transfer {
     private int transferStatusId;
     private int accountFromId;
     private int accountToId;
-//    private String accountFromUsername;
-//    private String accountToUsername;
-    private String transferStatusMessage;
-    private String transferTypeMessage;
     private BigDecimal amount;
-
-//    public Transfer(int transferId, int transferTypeId, String transferTypeMessage, int transferStatusId, String transferStatusMessage, int accountFromId, int accountToId, BigDecimal amount) {
-//        this.transferId = transferId;
-//        this.transferTypeId = transferTypeId;
-//        this.transferStatusId = transferStatusId;
-//        this.accountFromId = accountFromId;
-//        this.accountToId = accountToId;
-//        this.transferTypeMessage = transferTypeMessage;
-//        this.transferStatusMessage = transferStatusMessage;
-//        this.amount = amount;
-//    }
 
     public Transfer(int transferId, int transferTypeId, int transferStatusId, int accountFromId, int accountToId, BigDecimal amount) {
         this.transferId = transferId;
@@ -57,22 +42,6 @@ public class Transfer {
         return transferStatusId;
     }
 
-    public String getTransferStatusMessage() {
-        return transferStatusMessage;
-    }
-
-    public void setTransferStatusMessage(String transferStatusMessage) {
-        this.transferStatusMessage = transferStatusMessage;
-    }
-
-    public String getTransferTypeMessage() {
-        return transferTypeMessage;
-    }
-
-    public void setTransferTypeMessage(String transferTypeMessage) {
-        this.transferTypeMessage = transferTypeMessage;
-    }
-
     public void setTransferStatusId(int transferStatusId) {
         this.transferStatusId = transferStatusId;
     }
@@ -81,16 +50,16 @@ public class Transfer {
         return accountFromId;
     }
 
-    public String getToUsername() {
-        return toUsername;
+    public void setAccountFromId(int accountFromId) {
+        this.accountFromId = accountFromId;
     }
 
-    public void setToUsername(String toUsername) {
-        this.toUsername = toUsername;
+    public int getAccountToId() {
+        return accountToId;
     }
 
-    public int getToAccountId() {
-        return toAccountId;
+    public void setAccountToId(int accountToId) {
+        this.accountToId = accountToId;
     }
 
     public BigDecimal getAmount() {

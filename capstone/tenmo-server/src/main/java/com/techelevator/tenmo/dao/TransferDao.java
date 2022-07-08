@@ -12,22 +12,15 @@ public interface TransferDao {
 
     Transfer getTransferDetailsById(int transferId);
 
+    List<Transfer> listAllTransfers(int userId, int transferStatusId);
     List<Transfer> listAllTransfers(int userId);
     String getTransferTypeDescById(int id);
     String getTransferStatusDescById(int id);
-    List<Transfer> listPendingTransfers(int userId);
-
     Transfer createTransfer(Transfer transfer);
 
     //Use for approving or rejecting a request transfer
     //we don't need to use the two methods below
     void updateTransferStatus(Transfer transfer);
 
-
-
-//    Transfer requestTransfer(BigDecimal amountToRequest);
-
-//    void approveTransfer(boolean isTransferApproved, int TransferId);
-//    // Might want to think through this method
 
 }
