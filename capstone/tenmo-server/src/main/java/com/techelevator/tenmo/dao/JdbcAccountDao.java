@@ -56,43 +56,19 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public BigDecimal getBalanceByAccountId(int accountId) {
+    public Account getAccountByUsername(String username) {
 
-        String sql = "SELECT balance FROM account WHERE account_id = ?;";
+        Account account = null;
+        String sql = "SELECT a.account_id, a.user_id, a.balance FROM account a JOIN tenmo_user ts ON a.user_id = ts.user_id WHERE ts.username = ?; ";
 
-        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, accountId);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
 
-        if (balance != null){
-            return balance;
-        } else {
-            return BigDecimal.valueOf(-1);
+        if (results.next()) {
+            account = mapRowToAccount(results);
         }
-    }
-
-    @Override
-    public BigDecimal getBalanceByUserId(int userId) {
-        String sql = "SELECT balance FROM account WHERE user_id = ?;";
-
-        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
-
-        System.out.println(balance);
-
-        if (balance != null){
-            return balance;
-        } else {
-            return BigDecimal.valueOf(-1);
-        }
-    }
-
-    @Override
-    public BigDecimal getBalanceByUsername(String username) {
-
-        String sql = "SELECT balance FROM account a JOIN tenmo_user ts ON a.user_id = ts.user_id  WHERE username = ?; ";
-
-        return jdbcTemplate.queryForObject(sql, BigDecimal.class, username);
+        return account;
 
     }
-
 
     @Override
     public void addToBalance(int accountId, BigDecimal amountReceived) {
@@ -107,7 +83,7 @@ public class JdbcAccountDao implements AccountDao {
     @Override
     public void subtractFromBalance(int accountId, BigDecimal amountToSend) throws InsufficientFundsException {
 
-        if (getBalanceByAccountId(accountId).compareTo(amountToSend) > 0) {
+        if (getAccountByAccountId(accountId).getBalance().compareTo(amountToSend) > 0) {
             String sql = "UPDATE account " +
                     "SET balance = balance - ? " +
                     "WHERE account_id = ?;";
@@ -115,7 +91,6 @@ public class JdbcAccountDao implements AccountDao {
         } else {
             throw new InsufficientFundsException();
         }
-
     }
 
     private Account mapRowToAccount(SqlRowSet rowSet) {

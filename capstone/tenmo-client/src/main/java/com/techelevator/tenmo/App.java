@@ -1,11 +1,14 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TransferService;
+
+import java.math.BigDecimal;
 
 public class App {
 
@@ -96,10 +99,11 @@ public class App {
         }
     }
 
-    // Jonathan
+    // Done
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-		
+        Account userAccount = accountService.getUserAccount();
+		consoleService.printAccountBalance(userAccount);
 	}
 
     // Jay
