@@ -105,6 +105,7 @@ public class App {
     // Jay
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
+        consoleService.printTransferHistory(transferService.listAllTransfers());
 		
 	}
 
@@ -130,8 +131,7 @@ public class App {
 	private void sendBucks() {
 		// TODO Auto-generated method stub
         consoleService.printUsers(accountService.listUsers());
-        consoleService.printTransfers(transferService.listAllTransfers(1001));
-        consoleService.printTransfers(transferService.listPendingTransfers(1002));
+
 	}
 
     // Optional Use Case -- Revisit when initial app is built
