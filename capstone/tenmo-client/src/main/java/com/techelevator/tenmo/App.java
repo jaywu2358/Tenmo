@@ -2,8 +2,10 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import com.techelevator.tenmo.services.TransferService;
 
 public class App {
 
@@ -13,10 +15,17 @@ public class App {
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
+    private AccountService accountService;
+    private TransferService transferService;
 
     public static void main(String[] args) {
         App app = new App();
         app.run();
+    }
+
+    public void initializeServices() {
+        accountService = new AccountService(API_BASE_URL, currentUser.getToken());
+        transferService = new TransferService(API_BASE_URL, currentUser.getToken());
     }
 
     private void run() {
@@ -26,6 +35,7 @@ public class App {
             mainMenu();
         }
     }
+
     private void loginMenu() {
         int menuSelection = -1;
         while (menuSelection != 0 && currentUser == null) {
@@ -57,6 +67,8 @@ public class App {
         currentUser = authenticationService.login(credentials);
         if (currentUser == null) {
             consoleService.printErrorMessage();
+        } else {
+            initializeServices();
         }
     }
 
@@ -84,26 +96,45 @@ public class App {
         }
     }
 
+    // Jonathan
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
 		
 	}
 
+    // Jay
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
 		
 	}
 
+    // Jay
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
 		
 	}
 
+    /*
+    string.repeat();
+    word = transfers
+    string = "-" "="
+    count = word.length + 3;
+
+    Output:
+    ============
+    transfers
+    ============
+     */
+
+    // Jonathan
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		
+        consoleService.printUsers(accountService.listUsers());
+        consoleService.printTransfers(transferService.listAllTransfers(1001));
+        consoleService.printTransfers(transferService.listPendingTransfers(1002));
 	}
 
+    // Optional Use Case -- Revisit when initial app is built
 	private void requestBucks() {
 		// TODO Auto-generated method stub
 		
