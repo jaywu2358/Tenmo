@@ -56,14 +56,14 @@ public class TransferController {
         return transfer;
     }
 
-    @RequestMapping(path = "transfers/type")
-    public Transfer getTransferTypeDescById(@RequestParam int transferTypeId) {
+    @RequestMapping(path = "transfer/type")
+    public String getTransferTypeDescById(@RequestParam int transferTypeId) {
         return transferDao.getTransferTypeDescById(transferTypeId);
     }
 
 
     @RequestMapping(path = "transfer/status")
-    public Transfer getTransferStatusDescById(@RequestParam int transferStatusId) {
+    public String getTransferStatusDescById(@RequestParam int transferStatusId) {
         return transferDao.getTransferStatusDescById(transferStatusId);
     }
 
