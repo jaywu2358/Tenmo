@@ -42,7 +42,7 @@ public class TransferController {
     //Send transfer
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "transfers", method = RequestMethod.POST)
-    public Transfer sendTransfer(@RequestBody Transfer transfer) throws InsufficientFundsException {
+    public Transfer createTransfer(@RequestBody Transfer transfer) throws InsufficientFundsException {
 
         int senderAccountId = transfer.getAccountFromId();
         accountDao.subtractFromBalance(senderAccountId, transfer.getAmount());
