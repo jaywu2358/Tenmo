@@ -5,6 +5,7 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
+import jdk.swing.interop.SwingInterOpUtils;
 
 import java.math.BigDecimal;
 import java.util.Scanner;
@@ -96,13 +97,36 @@ public class ConsoleService {
         }
     }
 
-    public void printTransfers(Transfer[] transfers) {
+    public void printTransferHistory(int id, String fromAndToAccount, BigDecimal amount) {
+        String idFormat = "%-8s";    // min 11 characters, left aligned
+        String fromToFormat = "%-26s";  // min 26 characters, left aligned
+        String amountFormat = "%5s";   // fixed size 6 characters, right aligned
+        String formatInfo = idFormat + " " + fromToFormat + " " + amountFormat;
+
+
         System.out.println("--------------------------------------------");
-        System.out.println("Transfers");
+        System.out.println("Transfer History");
+        System.out.println("ID         FROM/TO                    AMOUNT");
         System.out.println("--------------------------------------------");
-        for (Transfer transfer : transfers) {
-            System.out.println(transfer.toString() + "\r\n");
-        }
+        System.out.format(formatInfo, id, fromAndToAccount, amount);
+        System.out.println();
+
+
+    }
+
+    public void printTransferDetails(int id, String accountFrom, String accountTo, String transferTypeDesc,
+                                     String transferStatusDesc, BigDecimal amount) {
+        System.out.println("--------------------------------------------");
+        System.out.println("Transfer Details");
+        System.out.println("--------------------------------------------");
+        System.out.println("Transfer Id: " + id);
+        System.out.println("From: " + accountFrom);
+        System.out.println("To: " + accountTo);
+        System.out.println("Type: " + transferTypeDesc);
+        System.out.println("Status: " + transferStatusDesc);
+        System.out.println("Amount: " + amount);
+        System.out.println();
+
     }
 
     public void printAccountBalance(Account account) {
