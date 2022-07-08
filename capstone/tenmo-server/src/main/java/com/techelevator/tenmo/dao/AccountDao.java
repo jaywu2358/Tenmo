@@ -14,11 +14,7 @@ public interface AccountDao {
 
     List<Account> listAllAccounts();
 
-    BigDecimal getBalanceByAccountId(int accountId);
-
-    BigDecimal getBalanceByUserId(int userId);
-
-    BigDecimal getBalanceByUsername(String username);
+    Account getAccountByUsername(String username);
 
     void addToBalance(int accountId, BigDecimal amountReceived);
 

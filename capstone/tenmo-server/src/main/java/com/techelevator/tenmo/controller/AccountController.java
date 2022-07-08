@@ -26,20 +26,20 @@ public class AccountController {
 
     //List all users
     @RequestMapping(path = "users")
-    public List<User> list() {
-        return  userDao.findAll();
+    public List<User> listUsers() {
+        return userDao.findAll();
     }
 
     //Get account balance
-    @RequestMapping(path = "balance")
-    public BigDecimal getBalance(Principal principal) {
-        return accountDao.getBalanceByUsername(principal.getName());
+    @RequestMapping(path = "account")
+    public Account getAccountByUsername(Principal principal) {
+        return accountDao.getAccountByUsername(principal.getName());
     }
 
-    @RequestMapping(path = "account/{accountId}")
-    public Account getAccountByAccountId(@PathVariable int accountId) {
-        return accountDao.getAccountByAccountId(accountId);
-    }
+//    @RequestMapping(path = "account/{accountId}")
+//    public Account getAccountByAccountId(@PathVariable int accountId) {
+//        return accountDao.getAccountByAccountId(accountId);
+//    }
 
     @RequestMapping(path = "account/user/{userId}")
     public Account getAccountByUserId(@PathVariable int userId) {
@@ -50,6 +50,5 @@ public class AccountController {
     public String getUsernameByUserId(@RequestParam int userId) {
         return userDao.getUsernameByUserId(userId);
     }
-
 
 }

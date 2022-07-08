@@ -129,6 +129,10 @@ public class ConsoleService {
 
     }
 
+    public void printAccountBalance(Account account) {
+        System.out.println("Your current account balance is: $" + account.getBalance());
+    }
+
     public void printErrorMessage() {
         System.out.println("An error occurred. Check the log for details.");
     }

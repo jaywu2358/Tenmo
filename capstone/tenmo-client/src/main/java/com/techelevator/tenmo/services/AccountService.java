@@ -15,7 +15,7 @@ public class AccountService {
 
     private String baseUrl;
     private final RestTemplate restTemplate = new RestTemplate();
-    private String authToken = null;
+    private String authToken;
 
     public AccountService(String url, String authToken) {
         this.baseUrl = url;
@@ -32,6 +32,18 @@ public class AccountService {
             BasicLogger.log(e.getMessage());
         }
         return users;
+    }
+
+    public Account getUserAccount() {
+        Account account = null;
+        try {
+            ResponseEntity<Account> response = restTemplate.exchange(baseUrl + "account", HttpMethod.GET,
+                    makeAuthEntity(), Account.class);
+            account = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return account;
     }
 
     private HttpEntity<Account> makeAccountEntity(Account account) {
