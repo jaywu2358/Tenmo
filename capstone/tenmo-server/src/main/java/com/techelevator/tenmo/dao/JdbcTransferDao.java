@@ -98,7 +98,7 @@ public class JdbcTransferDao implements  TransferDao {
     }
 
     @Override
-    public Transfer sendTransfer(Transfer transfer) {
+    public Transfer createTransfer(Transfer transfer) {
 
 //        String sql = "INSERT INTO transfer_type(transfer_type_desc) " +
 //                    "VALUES('Send') RETURNING transfer_type_id;";
@@ -135,8 +135,6 @@ public class JdbcTransferDao implements  TransferDao {
         transfer.setTransferStatusId(rowSet.getInt("transfer_status_id"));
         transfer.setAccountFromId(rowSet.getInt("account_from"));
         transfer.setAccountToId(rowSet.getInt("account_to"));
-        transfer.setTransferTypeMessage(rowSet.getString("transfer_type_desc"));
-        transfer.setTransferStatusMessage(rowSet.getString("transfer_status_desc"));
         transfer.setAmount(rowSet.getBigDecimal("amount"));
 
         return transfer;

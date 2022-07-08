@@ -15,25 +15,23 @@ public class Transfer {
     private String transferTypeMessage;
     private BigDecimal amount;
 
-//    public Transfer(int transferId, String transferTypeMessage, String transferStatusMessage, int accountFromId, int accountToId, BigDecimal amount) {
+//    public Transfer(int transferId, int transferTypeId, String transferTypeMessage, int transferStatusId, String transferStatusMessage, int accountFromId, int accountToId, BigDecimal amount) {
 //        this.transferId = transferId;
-//        this.transferTypeMessage = transferTypeMessage;
-//        this.transferStatusMessage = transferTypeMessage;
+//        this.transferTypeId = transferTypeId;
+//        this.transferStatusId = transferStatusId;
 //        this.accountFromId = accountFromId;
 //        this.accountToId = accountToId;
-//        this.accountFromUsername = accountFromUsername;
-//        this.accountToUsername = accountToUsername;
+//        this.transferTypeMessage = transferTypeMessage;
+//        this.transferStatusMessage = transferStatusMessage;
 //        this.amount = amount;
 //    }
 
-    public Transfer(int transferId, int transferTypeId, String transferTypeMessage, int transferStatusId, String transferStatusMessage, int accountFromId, int accountToId, BigDecimal amount) {
+    public Transfer(int transferId, int transferTypeId, int transferStatusId, int accountFromId, int accountToId, BigDecimal amount) {
         this.transferId = transferId;
         this.transferTypeId = transferTypeId;
         this.transferStatusId = transferStatusId;
         this.accountFromId = accountFromId;
         this.accountToId = accountToId;
-        this.transferTypeMessage = transferTypeMessage;
-        this.transferStatusMessage = transferStatusMessage;
         this.amount = amount;
     }
 
@@ -111,8 +109,6 @@ public class Transfer {
                 ", transferStatusId=" + transferStatusId +
                 ", accountFromId=" + accountFromId +
                 ", accountToId=" + accountToId +
-                ", transferStatusMessage='" + transferStatusMessage + '\'' +
-                ", transferTypeMessage='" + transferTypeMessage + '\'' +
                 ", amount=" + amount +
                 '}';
     }

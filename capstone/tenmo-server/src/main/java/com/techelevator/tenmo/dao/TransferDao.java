@@ -17,7 +17,7 @@ public interface TransferDao {
     String getTransferStatusDescById(int id);
     List<Transfer> listPendingTransfers(int userId);
 
-    Transfer sendTransfer(Transfer transfer);
+    Transfer createTransfer(Transfer transfer);
 
     //Use for approving or rejecting a request transfer
     //we don't need to use the two methods below
