@@ -98,17 +98,6 @@ public class JdbcAccountDao implements AccountDao {
     }
 
 
-
-    @Override
-    public BigDecimal getBalanceByUsername(String username) {
-        String sql = "SELECT a.balance FROM account a " +
-                "JOIN tenmo_user tu ON tu.user_id = a.user_id " +
-                "WHERE tu.username = ?;";
-
-        return jdbcTemplate.queryForObject(sql, BigDecimal.class, username);
-
-    }
-
     @Override
     public void addToBalance(int accountId, BigDecimal amountReceived) {
 
