@@ -114,17 +114,11 @@ public class Transfer {
 
     @Override
     public String toString() {
-        return "Transfer{" +
-                "transferId=" + transferId +
-                ", transferTypeId=" + transferTypeId +
-                ", transferTypeDesc='" + transferTypeDesc + '\'' +
-                ", transferStatusId=" + transferStatusId +
-                ", transferStatusDesc='" + transferStatusDesc + '\'' +
-                ", accountFromId=" + accountFromId +
-                ", accountFromUsername='" + accountFromUsername + '\'' +
-                ", accountToId=" + accountToId +
-                ", accountToUsername='" + accountToUsername + '\'' +
-                ", amount=" + amount +
-                '}';
+        return "Transfer Id: " + transferId +
+        "\r\nFrom: " + accountFromUsername +
+        "\r\nTo: " + accountToUsername +
+        "\r\nType: " + transferTypeDesc +
+        "\r\nStatus: " + transferStatusDesc +
+        "\r\nAmount: $" + amount;
     }
 }

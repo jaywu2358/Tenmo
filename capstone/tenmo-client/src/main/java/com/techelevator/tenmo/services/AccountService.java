@@ -46,6 +46,36 @@ public class AccountService {
         return account;
     }
 
+    public Account getAccountByUserId(int userId) {
+        Account account = null;
+        try {
+            ResponseEntity<Account> response = restTemplate.exchange(baseUrl + "account/user/" + userId, HttpMethod.GET,
+                    makeAuthEntity(), Account.class);
+            account = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return account;
+    }
+
+    public boolean validateId(int recipientUserId) {
+
+        boolean success = false;
+        Account account = null;
+        try {
+            ResponseEntity<Account> response = restTemplate.exchange(baseUrl + "account/user/" + recipientUserId, HttpMethod.GET,
+                    makeAuthEntity(), Account.class);
+            account = response.getBody();
+            if (account.getUserId() == recipientUserId) {
+                success = true;
+            }
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+
+        return success;
+    }
+
     private HttpEntity<Account> makeAccountEntity(Account account) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

@@ -36,11 +36,6 @@ public class AccountController {
         return accountDao.getAccountByUsername(principal.getName());
     }
 
-//    @RequestMapping(path = "account/{accountId}")
-//    public Account getAccountByAccountId(@PathVariable int accountId) {
-//        return accountDao.getAccountByAccountId(accountId);
-//    }
-
     @RequestMapping(path = "account/user/{userId}")
     public Account getAccountByUserId(@PathVariable int userId) {
         return accountDao.getAccountByUserId(userId);

@@ -21,6 +21,7 @@ public class App {
     private AuthenticatedUser currentUser;
     private AccountService accountService;
     private TransferService transferService;
+    private int userId;
 
     public static void main(String[] args) {
         App app = new App();
@@ -73,6 +74,7 @@ public class App {
             consoleService.printErrorMessage();
         } else {
             initializeServices();
+            this.userId = accountService.getUserAccount().getUserId();
         }
     }
 
@@ -100,11 +102,8 @@ public class App {
         }
     }
 
-    // Done
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
-        Account userAccount = accountService.getUserAccount();
-		consoleService.printAccountBalance(userAccount);
+		consoleService.printAccountBalance(accountService.getUserAccount());
 	}
 
     // Jay
@@ -134,9 +133,10 @@ public class App {
                 transferId = transfer.getTransferId();
                 if (transferId == menuSelection) {
                     validTransferId = true;
-                    consoleService.printTransferDetails(menuSelection, transfer.getAccountFromUsername(),
-                            transfer.getAccountToUsername(), transfer.getTransferTypeDesc(), transfer.getTransferStatusDesc(),
-                            transfer.getAmount());
+//                    consoleService.printTransferDetails(menuSelection, transfer.getAccountFromUsername(),
+//                            transfer.getAccountToUsername(), transfer.getTransferTypeDesc(), transfer.getTransferStatusDesc(),
+//                            transfer.getAmount());
+                    consoleService.printTransferDetails(transfer);
                     consoleService.pause();
                 } else if (menuSelection == 0) {
                     mainMenu();
@@ -180,9 +180,10 @@ public class App {
                 transferId = transfer.getTransferId();
                 if (transferId.equals(menuSelection)) {
                     validTransferId = true;
-                    consoleService.printTransferDetails(transferId, transfer.getAccountFromUsername(),
-                            transfer.getAccountToUsername(), transfer.getTransferTypeDesc(), transfer.getTransferStatusDesc(),
-                            transfer.getAmount());
+//                    consoleService.printTransferDetails(transferId, transfer.getAccountFromUsername(),
+//                            transfer.getAccountToUsername(), transfer.getTransferTypeDesc(), transfer.getTransferStatusDesc(),
+//                            transfer.getAmount());
+                    consoleService.printTransferDetails(transfer);
                     consoleService.pause();
                 } else if (menuSelection == 0){
                     mainMenu();
@@ -200,10 +201,26 @@ public class App {
 
     // Jonathan
 	private void sendBucks() {
-		// TODO Auto-generated method stub
         consoleService.printUsers(accountService.listUsers());
+        int recipientId = consoleService.promptForInt("Enter recipient's user ID (0 to cancel): ");
+        boolean isRecipientIdValid = false;
+        if (recipientId == userId) {
+            System.out.println("You can't send money to yourself.");
+        } else if (recipientId != 0) {
+            isRecipientIdValid = accountService.validateId(recipientId);
+        }
 
-	}
+        if (isRecipientIdValid) {
+            BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
+
+            // Change these to users
+            Account userAccount = accountService.getUserAccount();
+            Account recipientAccount = accountService.getAccountByUserId(recipientId);
+            boolean success = transferService.sendTransfer(userAccount, recipientAccount, amountToSend);
+            System.out.println(success);
+        }
+
+    }
 
     // Optional Use Case -- Revisit when initial app is built
 	private void requestBucks() {
