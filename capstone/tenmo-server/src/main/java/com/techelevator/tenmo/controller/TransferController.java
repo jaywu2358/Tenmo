@@ -19,8 +19,8 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 public class TransferController {
 
-    private TransferDao transferDao;
-    private AccountDao accountDao;
+    private final TransferDao transferDao;
+    private final AccountDao accountDao;
 
     public TransferController(TransferDao transferDao, AccountDao accountDao) {
         this.transferDao = transferDao;
@@ -54,10 +54,15 @@ public class TransferController {
     public Transfer createTransfer(@RequestBody Transfer transfer) throws InsufficientFundsException {
 
         int senderAccountId = transfer.getAccountFromId();
-        accountDao.subtractFromBalance(senderAccountId, transfer.getAmount());
+        Account senderAccount = accountDao.getAccountByUserId(senderAccountId);
+        accountDao.subtractFromBalance(senderAccount, transfer.getAmount());
 
         int recipientAccountId = transfer.getAccountToId();
-        accountDao.addToBalance(recipientAccountId, transfer.getAmount());
+        Account recipientAccount = accountDao.getAccountByUserId(recipientAccountId);
+        accountDao.addToBalance(recipientAccount, transfer.getAmount());
+
+        transfer.setAccountFromId(senderAccount.getAccountId());
+        transfer.setAccountToId(recipientAccount.getAccountId());
 
         transfer = transferDao.createTransfer(transfer);
 

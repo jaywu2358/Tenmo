@@ -16,6 +16,11 @@ public class TransferService {
     private String baseUrl;
     private final RestTemplate restTemplate = new RestTemplate();
     private String authToken = null;
+    private final int TYPE_REQUEST = 1;
+    private final int TYPE_SEND = 2;
+    private final int STATUS_PENDING = 1;
+    private final int STATUS_APPROVED = 2;
+    private final int STATUS_REJECTED = 3;
 
     public TransferService(String url, String authToken) {
         this.baseUrl = url;
@@ -92,23 +97,20 @@ public class TransferService {
     }
 
 
-    public boolean sendTransfer(Account senderAccount, Account recipientAccount, BigDecimal amountToSend) {
-        boolean success = false;
+    public Transfer sendTransfer(int userId, int recipientId, BigDecimal amountToSend) {
 
-        Transfer transferToSend = new Transfer(0, 2, "test", 2, "test", senderAccount.getAccountId(), "test", recipientAccount.getAccountId(), "test", amountToSend);
+        Transfer transferToSend = new Transfer(0, TYPE_SEND, "", STATUS_APPROVED,
+                "", userId, "", recipientId, "", amountToSend);
 
         Transfer returnedTransfer = null;
 
         try {
             returnedTransfer = restTemplate.postForObject(baseUrl + "transfers", makeTransferEntity(transferToSend), Transfer.class);
-            if (returnedTransfer != null) {
-                success = true;
-            }
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
 
-        return success;
+        return returnedTransfer;
 
     }
 

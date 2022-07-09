@@ -16,8 +16,8 @@ public interface AccountDao {
 
     Account getAccountByUsername(String username);
 
-    void addToBalance(int accountId, BigDecimal amountReceived);
+    void addToBalance(Account recipientAccount, BigDecimal amountReceived);
 
-    void subtractFromBalance(int accountId, BigDecimal amountToSend) throws InsufficientFundsException;
+    void subtractFromBalance(Account senderAccount, BigDecimal amountToSend) throws InsufficientFundsException;
 
 }

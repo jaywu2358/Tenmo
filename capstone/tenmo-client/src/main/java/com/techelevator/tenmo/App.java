@@ -1,15 +1,15 @@
 package com.techelevator.tenmo;
 
-import com.techelevator.tenmo.model.Account;
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TransferService;
 
 import java.math.BigDecimal;
+import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 public class App {
 
@@ -21,7 +21,6 @@ public class App {
     private AuthenticatedUser currentUser;
     private AccountService accountService;
     private TransferService transferService;
-    private int userId;
 
     public static void main(String[] args) {
         App app = new App();
@@ -74,7 +73,6 @@ public class App {
             consoleService.printErrorMessage();
         } else {
             initializeServices();
-            this.userId = accountService.getUserAccount().getUserId();
         }
     }
 
@@ -100,23 +98,27 @@ public class App {
             }
             consoleService.pause();
         }
+        System.out.println("Goodbye!");
     }
 
 	private void viewCurrentBalance() {
 		consoleService.printAccountBalance(accountService.getUserAccount());
 	}
 
-    // Jay
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
         int menuSelection = -1;
         Integer transferId;
 
-        while(menuSelection!= 0 ) {
+        while(menuSelection != 0) {
 
             int currentUserId = accountService.getUserAccount().getUserId();
 
             Transfer[] transfers = transferService.listAllTransfers(currentUserId);
+
+            if (transfers.length == 0) {
+                System.out.println("You have no previous transfers.");
+                break;
+            }
 
             System.out.println("--------------------------------------------");
             System.out.println("Transfer History");
@@ -139,29 +141,19 @@ public class App {
                 transferId = transfer.getTransferId();
                 if (transferId == menuSelection) {
                     validTransferId = true;
-//                    consoleService.printTransferDetails(menuSelection, transfer.getAccountFromUsername(),
-//                            transfer.getAccountToUsername(), transfer.getTransferTypeDesc(), transfer.getTransferStatusDesc(),
-//                            transfer.getAmount());
                     consoleService.printTransferDetails(transfer);
-                    consoleService.pause();
-                } else if (menuSelection == 0) {
-                    mainMenu();
-                    break;
                 }
+                // Removed else if because 0 will break while loop
             }
-            if(!validTransferId) {
-                System.out.println("--------------------------------------------------------------");
-                System.out.println("Invalid transfer ID. Please enter a transfer ID from the list!");
-                consoleService.pause();
-                System.out.println();
+            if (!validTransferId && menuSelection != 0) {
+                consoleService.printInvalidSelectionError("transfer");
             }
         }
     }
 
 
-    // Jay
+    // Jay2
 	private void viewPendingRequests() {
-        // TODO Auto-generated method stub
         int menuSelection = -1;
 
         while(menuSelection!= 0 ) {
@@ -170,6 +162,11 @@ public class App {
             Integer transferId = null;
 
             Transfer[] transfers = transferService.listAllPendingTransfers(currentUserId, 1);
+
+            if (transfers.length == 0) {
+                System.out.println("There are no pending transfers.");
+                break;
+            }
 
             for (Transfer transfer : transfers) {
                 transferId = transfer.getTransferId();
@@ -186,45 +183,60 @@ public class App {
                 transferId = transfer.getTransferId();
                 if (transferId.equals(menuSelection)) {
                     validTransferId = true;
-//                    consoleService.printTransferDetails(transferId, transfer.getAccountFromUsername(),
-//                            transfer.getAccountToUsername(), transfer.getTransferTypeDesc(), transfer.getTransferStatusDesc(),
-//                            transfer.getAmount());
                     consoleService.printTransferDetails(transfer);
                     consoleService.pause();
-                } else if (menuSelection == 0){
-                    mainMenu();
-                    break;
                 }
+                // Removed else if because 0 will break while loop
             }
-            if(!validTransferId) {
-                System.out.println("--------------------------------------------------------------");
-                System.out.println("Invalid transfer ID. Please enter a transfer ID from the list!");
-                consoleService.pause();
-                System.out.println();
+            if (!validTransferId && menuSelection != 0) {
+                consoleService.printInvalidSelectionError("transfer");
             }
         }
     }
 
-    // Jonathan
 	private void sendBucks() {
-        consoleService.printUsers(accountService.listUsers());
-        int recipientId = consoleService.promptForInt("Enter recipient's user ID (0 to cancel): ");
-        boolean isRecipientIdValid = false;
-        if (recipientId == userId) {
-            System.out.println("You can't send money to yourself.");
-        } else if (recipientId != 0) {
-            isRecipientIdValid = accountService.validateId(recipientId);
+        int menuSelection = -1;
+
+        while (menuSelection != 0) {
+            int currentUserId = currentUser.getUser().getId().intValue();
+            User[] users = accountService.listUsers();
+            if (users.length == 1) {
+                System.out.println("There are no other users registered.");
+                break;
+            }
+
+            List<Long> userIds = new ArrayList<>();
+            for (User user : users) {
+                userIds.add(user.getId());
+            }
+            consoleService.printUsers(users, currentUserId);
+            menuSelection = consoleService.promptForInt("Enter recipient's user ID (0 to cancel): ");
+            int recipientId = menuSelection;
+
+            boolean isRecipientIdValid = false;
+            if (recipientId == currentUserId) {
+                System.out.println("You can't send money to yourself.");
+            } else if (recipientId == 0) {
+                break;
+            } else if (userIds.contains((long) recipientId)) {
+                isRecipientIdValid = true;
+            } else {
+                consoleService.printInvalidSelectionError("user");
+            }
+
+            if (isRecipientIdValid) {
+                BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
+
+                Transfer transfer = transferService.sendTransfer(currentUserId, recipientId, amountToSend);
+                if (transfer != null) {
+                    consoleService.printTransferDetails(transfer);
+                } else {
+                    consoleService.printErrorMessage();
+                }
+                break;
+            }
         }
 
-        if (isRecipientIdValid) {
-            BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
-
-            // Change these to users
-            Account userAccount = accountService.getUserAccount();
-            Account recipientAccount = accountService.getAccountByUserId(recipientId);
-            boolean success = transferService.sendTransfer(userAccount, recipientAccount, amountToSend);
-            System.out.println(success);
-        }
 
     }
 

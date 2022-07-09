@@ -88,7 +88,7 @@ public class ConsoleService {
         scanner.nextLine();
     }
 
-    public void printUsers(User[] accounts) {
+    public void printUsers(User[] accounts, int currentUserId) {
         System.out.println("--------------------------------------------");
         System.out.println("Users");
         System.out.println("ID         NAME");
@@ -98,7 +98,9 @@ public class ConsoleService {
         String formatInfo = idFormat + " " + nameFormat + "\r\n";
 
         for (User user : accounts) {
-            System.out.format(formatInfo, user.getId(), user.getUsername());
+            if (user.getId() != currentUserId) {
+                System.out.format(formatInfo, user.getId(), user.getUsername());
+            }
         }
 
         System.out.println("---------\r\n");
@@ -130,4 +132,9 @@ public class ConsoleService {
         System.out.println("An error occurred. Check the log for details.");
     }
 
+    public void printInvalidSelectionError(String word) {
+        System.out.println("--------------------------------------------------------------");
+        System.out.println("Invalid " + word + " id. Please enter a " + word + " ID from the list!");
+        System.out.println();
+    }
 }
