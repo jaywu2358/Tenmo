@@ -99,18 +99,18 @@ public class ConsoleService {
 
     public void printTransferHistory(int id, String fromAndToAccount, BigDecimal amount) {
         String idFormat = "%-10s";    // min 10 characters, left aligned
-        String fromToFormat = "%-26s";  // min 26 characters, left aligned
-        String amountFormat = "%5s";   // fixed size 6 characters, right aligned
-        String formatInfo = idFormat + " " + fromToFormat + " $" + amountFormat;
+        String fromToFormat = "%-23s";  // min 25 characters, left aligned
+        String amountFormat = "%9s";   // fixed size 6 characters, right aligned
+        String formatInfo = idFormat + " " + fromToFormat + " " + amountFormat;
 
 
         System.out.println("--------------------------------------------");
         System.out.println("Transfer History");
+        System.out.println();
         System.out.println("ID         FROM/TO                    AMOUNT");
         System.out.println("--------------------------------------------");
-        System.out.format(formatInfo, id, fromAndToAccount, amount);
+        System.out.format(formatInfo, id, fromAndToAccount, "$ " + amount);
         System.out.println();
-
 
     }
 

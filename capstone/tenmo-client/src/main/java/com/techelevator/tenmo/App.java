@@ -2,6 +2,7 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
@@ -109,29 +110,93 @@ public class App {
     // Jay
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-        int currentUserId = accountService.getUserAccount().getUserId();
+        int menuSelection = -1;
+        Integer transferId;
 
-        consoleService.printTransferHistory(transferService.listAllTransfers());
-		
-	}
+        while(menuSelection!= 0 ) {
+
+            int currentUserId = accountService.getUserAccount().getUserId();
+
+            Transfer[] transfers = transferService.listAllTransfers(currentUserId);
+
+            for (Transfer transfer : transfers) {
+                transferId = transfer.getTransferId();
+                consoleService.printTransferHistory(transferId, transfer.getAccountFromUsername() + "/"
+                        + transfer.getAccountToUsername(), transfer.getAmount());
+            }
+
+            //List details
+            System.out.println();
+            menuSelection = consoleService.promptForMenuSelection("Please enter transfer ID to view details (0 to cancel): ");
+            boolean validTransferId = false;
+
+            for (Transfer transfer : transfers) {
+                transferId = transfer.getTransferId();
+                if (transferId == menuSelection) {
+                    validTransferId = true;
+                    consoleService.printTransferDetails(menuSelection, transfer.getAccountFromUsername(),
+                            transfer.getAccountToUsername(), transfer.getTransferTypeDesc(), transfer.getTransferStatusDesc(),
+                            transfer.getAmount());
+                    consoleService.pause();
+                } else if (menuSelection == 0) {
+                    mainMenu();
+                    break;
+                }
+            }
+            if(!validTransferId) {
+                System.out.println("--------------------------------------------------------------");
+                System.out.println("Invalid transfer ID. Please enter a transfer ID from the list!");
+                consoleService.pause();
+                System.out.println();
+            }
+        }
+    }
+
 
     // Jay
 	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
-		
-	}
+        // TODO Auto-generated method stub
+        int menuSelection = -1;
 
-    /*
-    string.repeat();
-    word = transfers
-    string = "-" "="
-    count = word.length + 3;
+        while(menuSelection!= 0 ) {
 
-    Output:
-    ============
-    transfers
-    ============
-     */
+            int currentUserId = accountService.getUserAccount().getUserId();
+            Integer transferId = null;
+
+            Transfer[] transfers = transferService.listAllPendingTransfers(currentUserId, 1);
+
+            for (Transfer transfer : transfers) {
+                transferId = transfer.getTransferId();
+                consoleService.printTransferHistory(transferId, transfer.getAccountFromUsername() + "/"
+                        + transfer.getAccountToUsername(), transfer.getAmount());
+            }
+
+            System.out.println();
+            menuSelection = consoleService.promptForMenuSelection("Please enter transfer ID to view details (0 to cancel): ");
+            boolean validTransferId = false;
+
+            //List details
+            for (Transfer transfer : transfers) {
+                transferId = transfer.getTransferId();
+                if (transferId.equals(menuSelection)) {
+                    validTransferId = true;
+                    consoleService.printTransferDetails(transferId, transfer.getAccountFromUsername(),
+                            transfer.getAccountToUsername(), transfer.getTransferTypeDesc(), transfer.getTransferStatusDesc(),
+                            transfer.getAmount());
+                    consoleService.pause();
+                } else if (menuSelection == 0){
+                    mainMenu();
+                    break;
+                }
+            }
+            if(!validTransferId) {
+                System.out.println("--------------------------------------------------------------");
+                System.out.println("Invalid transfer ID. Please enter a transfer ID from the list!");
+                consoleService.pause();
+                System.out.println();
+            }
+        }
+    }
 
     // Jonathan
 	private void sendBucks() {
