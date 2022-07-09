@@ -91,10 +91,17 @@ public class ConsoleService {
     public void printUsers(User[] accounts) {
         System.out.println("--------------------------------------------");
         System.out.println("Users");
+        System.out.println("ID         NAME");
         System.out.println("--------------------------------------------");
+        String idFormat = "%-10s";
+        String nameFormat = "%-26s";
+        String formatInfo = idFormat + " " + nameFormat + "\r\n";
+
         for (User user : accounts) {
-            System.out.println(user.toString() + "\r\n");
+            System.out.format(formatInfo, user.getId(), user.getUsername());
         }
+
+        System.out.println("---------\r\n");
     }
 
     public void printTransferHistory(int id, String fromAndToAccount, BigDecimal amount) {
@@ -103,30 +110,20 @@ public class ConsoleService {
         String amountFormat = "%5s";   // fixed size 6 characters, right aligned
         String formatInfo = idFormat + " " + fromToFormat + " $" + amountFormat;
 
-
         System.out.println("--------------------------------------------");
         System.out.println("Transfer History");
         System.out.println("ID         FROM/TO                    AMOUNT");
         System.out.println("--------------------------------------------");
         System.out.format(formatInfo, id, fromAndToAccount, amount);
         System.out.println();
-
-
     }
 
-    public void printTransferDetails(int id, String accountFrom, String accountTo, String transferTypeDesc,
-                                     String transferStatusDesc, BigDecimal amount) {
+    public void printTransferDetails(Transfer transfer) {
         System.out.println("--------------------------------------------");
         System.out.println("Transfer Details");
         System.out.println("--------------------------------------------");
-        System.out.println("Transfer Id: " + id);
-        System.out.println("From: " + accountFrom);
-        System.out.println("To: " + accountTo);
-        System.out.println("Type: " + transferTypeDesc);
-        System.out.println("Status: " + transferStatusDesc);
-        System.out.println("Amount: " + amount);
+        System.out.println(transfer.toString());
         System.out.println();
-
     }
 
     public void printAccountBalance(Account account) {

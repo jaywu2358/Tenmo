@@ -83,7 +83,10 @@ public class JdbcAccountDao implements AccountDao {
     @Override
     public void subtractFromBalance(int accountId, BigDecimal amountToSend) throws InsufficientFundsException {
 
-        if (getAccountByAccountId(accountId).getBalance().compareTo(amountToSend) > 0) {
+        Account account = getAccountByAccountId(accountId);
+        BigDecimal accountBalance = account.getBalance();
+
+        if (accountBalance.compareTo(amountToSend) >= 0) {
             String sql = "UPDATE account " +
                     "SET balance = balance - ? " +
                     "WHERE account_id = ?;";

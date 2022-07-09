@@ -1,11 +1,14 @@
 package com.techelevator.tenmo.services;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
+
+import java.math.BigDecimal;
 
 public class TransferService {
 
@@ -40,6 +43,26 @@ public class TransferService {
             BasicLogger.log(e.getMessage());
         }
         return transfers;
+    }
+
+    public boolean sendTransfer(Account senderAccount, Account recipientAccount, BigDecimal amountToSend) {
+        boolean success = false;
+
+        Transfer transferToSend = new Transfer(0, 2, "test", 2, "test", senderAccount.getAccountId(), "test", recipientAccount.getAccountId(), "test", amountToSend);
+
+        Transfer returnedTransfer = null;
+
+        try {
+            returnedTransfer = restTemplate.postForObject(baseUrl + "transfers", makeTransferEntity(transferToSend), Transfer.class);
+            if (returnedTransfer != null) {
+                success = true;
+            }
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+
+        return success;
+
     }
 
     private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
