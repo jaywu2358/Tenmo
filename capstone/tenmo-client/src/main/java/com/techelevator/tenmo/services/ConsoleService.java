@@ -98,10 +98,10 @@ public class ConsoleService {
     }
 
     public void printTransferHistory(int id, String fromAndToAccount, BigDecimal amount) {
-        String idFormat = "%-8s";    // min 11 characters, left aligned
+        String idFormat = "%-10s";    // min 10 characters, left aligned
         String fromToFormat = "%-26s";  // min 26 characters, left aligned
         String amountFormat = "%5s";   // fixed size 6 characters, right aligned
-        String formatInfo = idFormat + " " + fromToFormat + " " + amountFormat;
+        String formatInfo = idFormat + " " + fromToFormat + " $" + amountFormat;
 
 
         System.out.println("--------------------------------------------");

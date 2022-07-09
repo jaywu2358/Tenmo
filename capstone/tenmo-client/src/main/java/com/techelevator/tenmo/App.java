@@ -109,7 +109,7 @@ public class App {
     // Jay
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-        consoleService.printTransferHistory(transferService.listAllTransfers());
+        consoleService.printTransferHistory(1001, "Jonathan/Jay", BigDecimal.valueOf(200));
 		
 	}
 
