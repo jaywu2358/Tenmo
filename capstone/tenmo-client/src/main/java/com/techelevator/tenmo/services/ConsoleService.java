@@ -110,11 +110,6 @@ public class ConsoleService {
         String amountFormat = "%9s";   // fixed size 6 characters, right aligned
         String formatInfo = idFormat + " " + fromToFormat + " " + amountFormat;
 
-        System.out.println("--------------------------------------------");
-        System.out.println("Transfer History");
-        System.out.println();
-        System.out.println("ID         FROM/TO                    AMOUNT");
-        System.out.println("--------------------------------------------");
         System.out.format(formatInfo, id, fromAndToAccount, "$ " + amount);
         System.out.println();
     }

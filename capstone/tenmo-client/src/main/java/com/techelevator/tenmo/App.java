@@ -118,6 +118,12 @@ public class App {
 
             Transfer[] transfers = transferService.listAllTransfers(currentUserId);
 
+            System.out.println("--------------------------------------------");
+            System.out.println("Transfer History");
+            System.out.println();
+            System.out.println("ID         FROM/TO                    AMOUNT");
+            System.out.println("--------------------------------------------");
+
             for (Transfer transfer : transfers) {
                 transferId = transfer.getTransferId();
                 consoleService.printTransferHistory(transferId, transfer.getAccountFromUsername() + "/"
