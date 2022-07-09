@@ -109,6 +109,8 @@ public class App {
     // Jay
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
+        int currentUserId = accountService.getUserAccount().getUserId();
+
         consoleService.printTransferHistory(transferService.listAllTransfers());
 		
 	}
