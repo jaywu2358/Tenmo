@@ -10,12 +10,12 @@ public interface TransferDao {
 //    List<Transfer> listTransfersByAccount(int accountId);
 //    // Should this take in an account object instead?
 
-    Transfer getTransferDetailsById(int transferId);
+    Transfer getTransferById(int transferId);
 
-    List<Transfer> listAllTransfers(int userId, int transferStatusId);
+    List<Transfer> filterTransfersByStatus(int userId, int transferStatusId);
+    List<Transfer> filterTransfersByType(int userId, int transferTypeId);
+    List<Transfer> filterTransfersByTypeAndStatus(int userId, int transferTypeId, int transferStatusId);
     List<Transfer> listAllTransfers(int userId);
-    String getTransferTypeDescById(int id);
-    String getTransferStatusDescById(int id);
     Transfer createTransfer(Transfer transfer);
 
     //Use for approving or rejecting a request transfer

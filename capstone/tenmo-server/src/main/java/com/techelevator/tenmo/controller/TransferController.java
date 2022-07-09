@@ -29,18 +29,23 @@ public class TransferController {
 
     //List all transfers
     @RequestMapping(path = "transfers")
-    public List<Transfer> listAllTransfersForAGivenUser(@RequestParam int userId, @RequestParam (required = false, defaultValue = "0") int transferStatusId) {
-        if (transferStatusId == 0) {
+    public List<Transfer> listTransfers(@RequestParam int userId, @RequestParam (required = false, defaultValue = "0")
+            int transferTypeId, @RequestParam (required = false, defaultValue = "0") int transferStatusId) {
+        if (transferStatusId == 0 && transferTypeId == 0) {
             return transferDao.listAllTransfers(userId);
-
+        } else if (transferTypeId > 0 && transferStatusId == 0) {
+            return transferDao.filterTransfersByType(userId, transferTypeId);
+        } else if (transferTypeId == 0 && transferStatusId > 0) {
+            return transferDao.filterTransfersByStatus(userId, transferStatusId);
+        } else {
+            return transferDao.filterTransfersByTypeAndStatus(userId, transferTypeId, transferStatusId);
         }
-        return transferDao.listAllTransfers(userId, transferStatusId);
     }
 
     //Get transfer details by transfer Id
     @RequestMapping(path = "transfers/{id}")
     public Transfer get(@PathVariable int id) {
-        return transferDao.getTransferDetailsById(id);
+        return transferDao.getTransferById(id);
     }
 
     //Send transfer
@@ -57,16 +62,6 @@ public class TransferController {
         transfer = transferDao.createTransfer(transfer);
 
         return transfer;
-    }
-
-    @RequestMapping(path = "transfer/type")
-    public String getTransferTypeDescById(@RequestParam int transferTypeId) {
-        return transferDao.getTransferTypeDescById(transferTypeId);
-    }
-
-    @RequestMapping(path = "transfer/status")
-    public String getTransferStatusDescById(@RequestParam int transferStatusId) {
-        return transferDao.getTransferStatusDescById(transferStatusId);
     }
 
 }

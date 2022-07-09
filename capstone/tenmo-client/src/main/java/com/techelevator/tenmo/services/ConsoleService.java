@@ -5,6 +5,7 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
+import jdk.swing.interop.SwingInterOpUtils;
 
 import java.math.BigDecimal;
 import java.util.Scanner;
@@ -90,19 +91,44 @@ public class ConsoleService {
     public void printUsers(User[] accounts) {
         System.out.println("--------------------------------------------");
         System.out.println("Users");
+        System.out.println("ID         NAME");
         System.out.println("--------------------------------------------");
+        String idFormat = "%-10s";
+        String nameFormat = "%-26s";
+        String formatInfo = idFormat + " " + nameFormat + "\r\n";
+
         for (User user : accounts) {
-            System.out.println(user.toString() + "\r\n");
+            System.out.format(formatInfo, user.getId(), user.getUsername());
         }
+
+        System.out.println("---------\r\n");
     }
 
-    public void printTransfers(Transfer[] transfers) {
+    public void printTransferHistory(int id, String fromAndToAccount, BigDecimal amount) {
+        String idFormat = "%-10s";    // min 10 characters, left aligned
+        String fromToFormat = "%-23s";  // min 25 characters, left aligned
+        String amountFormat = "%9s";   // fixed size 6 characters, right aligned
+        String formatInfo = idFormat + " " + fromToFormat + " " + amountFormat;
+
         System.out.println("--------------------------------------------");
-        System.out.println("Transfers");
+        System.out.println("Transfer History");
+        System.out.println();
+        System.out.println("ID         FROM/TO                    AMOUNT");
         System.out.println("--------------------------------------------");
-        for (Transfer transfer : transfers) {
-            System.out.println(transfer.toString() + "\r\n");
-        }
+        System.out.format(formatInfo, id, fromAndToAccount, "$ " + amount);
+        System.out.println();
+    }
+
+    public void printTransferDetails(Transfer transfer) {
+        System.out.println("--------------------------------------------");
+        System.out.println("Transfer Details");
+        System.out.println("--------------------------------------------");
+        System.out.println(transfer.toString());
+        System.out.println();
+    }
+
+    public void printAccountBalance(Account account) {
+        System.out.println("Your current account balance is: $" + account.getBalance());
     }
 
     public void printErrorMessage() {

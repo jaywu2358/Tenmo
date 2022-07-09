@@ -1,11 +1,15 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TransferService;
+
+import java.math.BigDecimal;
 
 public class App {
 
@@ -17,6 +21,7 @@ public class App {
     private AuthenticatedUser currentUser;
     private AccountService accountService;
     private TransferService transferService;
+    private int userId;
 
     public static void main(String[] args) {
         App app = new App();
@@ -69,6 +74,7 @@ public class App {
             consoleService.printErrorMessage();
         } else {
             initializeServices();
+            this.userId = accountService.getUserAccount().getUserId();
         }
     }
 
@@ -96,43 +102,125 @@ public class App {
         }
     }
 
-    // Jonathan
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
-		
+		consoleService.printAccountBalance(accountService.getUserAccount());
 	}
 
     // Jay
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		
-	}
+        int menuSelection = -1;
+        Integer transferId;
+
+        while(menuSelection!= 0 ) {
+
+            int currentUserId = accountService.getUserAccount().getUserId();
+
+            Transfer[] transfers = transferService.listAllTransfers(currentUserId);
+
+            for (Transfer transfer : transfers) {
+                transferId = transfer.getTransferId();
+                consoleService.printTransferHistory(transferId, transfer.getAccountFromUsername() + "/"
+                        + transfer.getAccountToUsername(), transfer.getAmount());
+            }
+
+            //List details
+            System.out.println();
+            menuSelection = consoleService.promptForMenuSelection("Please enter transfer ID to view details (0 to cancel): ");
+            boolean validTransferId = false;
+
+            for (Transfer transfer : transfers) {
+                transferId = transfer.getTransferId();
+                if (transferId == menuSelection) {
+                    validTransferId = true;
+//                    consoleService.printTransferDetails(menuSelection, transfer.getAccountFromUsername(),
+//                            transfer.getAccountToUsername(), transfer.getTransferTypeDesc(), transfer.getTransferStatusDesc(),
+//                            transfer.getAmount());
+                    consoleService.printTransferDetails(transfer);
+                    consoleService.pause();
+                } else if (menuSelection == 0) {
+                    mainMenu();
+                    break;
+                }
+            }
+            if(!validTransferId) {
+                System.out.println("--------------------------------------------------------------");
+                System.out.println("Invalid transfer ID. Please enter a transfer ID from the list!");
+                consoleService.pause();
+                System.out.println();
+            }
+        }
+    }
+
 
     // Jay
 	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
-		
-	}
+        // TODO Auto-generated method stub
+        int menuSelection = -1;
 
-    /*
-    string.repeat();
-    word = transfers
-    string = "-" "="
-    count = word.length + 3;
+        while(menuSelection!= 0 ) {
 
-    Output:
-    ============
-    transfers
-    ============
-     */
+            int currentUserId = accountService.getUserAccount().getUserId();
+            Integer transferId = null;
+
+            Transfer[] transfers = transferService.listAllPendingTransfers(currentUserId, 1);
+
+            for (Transfer transfer : transfers) {
+                transferId = transfer.getTransferId();
+                consoleService.printTransferHistory(transferId, transfer.getAccountFromUsername() + "/"
+                        + transfer.getAccountToUsername(), transfer.getAmount());
+            }
+
+            System.out.println();
+            menuSelection = consoleService.promptForMenuSelection("Please enter transfer ID to view details (0 to cancel): ");
+            boolean validTransferId = false;
+
+            //List details
+            for (Transfer transfer : transfers) {
+                transferId = transfer.getTransferId();
+                if (transferId.equals(menuSelection)) {
+                    validTransferId = true;
+//                    consoleService.printTransferDetails(transferId, transfer.getAccountFromUsername(),
+//                            transfer.getAccountToUsername(), transfer.getTransferTypeDesc(), transfer.getTransferStatusDesc(),
+//                            transfer.getAmount());
+                    consoleService.printTransferDetails(transfer);
+                    consoleService.pause();
+                } else if (menuSelection == 0){
+                    mainMenu();
+                    break;
+                }
+            }
+            if(!validTransferId) {
+                System.out.println("--------------------------------------------------------------");
+                System.out.println("Invalid transfer ID. Please enter a transfer ID from the list!");
+                consoleService.pause();
+                System.out.println();
+            }
+        }
+    }
 
     // Jonathan
 	private void sendBucks() {
-		// TODO Auto-generated method stub
         consoleService.printUsers(accountService.listUsers());
-        consoleService.printTransfers(transferService.listAllTransfers(1001));
-        consoleService.printTransfers(transferService.listPendingTransfers(1002));
-	}
+        int recipientId = consoleService.promptForInt("Enter recipient's user ID (0 to cancel): ");
+        boolean isRecipientIdValid = false;
+        if (recipientId == userId) {
+            System.out.println("You can't send money to yourself.");
+        } else if (recipientId != 0) {
+            isRecipientIdValid = accountService.validateId(recipientId);
+        }
+
+        if (isRecipientIdValid) {
+            BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
+
+            // Change these to users
+            Account userAccount = accountService.getUserAccount();
+            Account recipientAccount = accountService.getAccountByUserId(recipientId);
+            boolean success = transferService.sendTransfer(userAccount, recipientAccount, amountToSend);
+            System.out.println(success);
+        }
+
+    }
 
     // Optional Use Case -- Revisit when initial app is built
 	private void requestBucks() {
