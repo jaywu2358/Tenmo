@@ -33,7 +33,6 @@ public class TransferController {
         this.accountDao = accountDao;
     }
 
-    //List all transfers
     @RequestMapping(path = "transfers")
     public List<Transfer> listTransfers(@RequestParam int userId, @RequestParam (required = false, defaultValue = "0")
             int transferTypeId, @RequestParam (required = false, defaultValue = "0") int transferStatusId) {
@@ -48,13 +47,11 @@ public class TransferController {
         }
     }
 
-    //Get transfer details by transfer Id
     @RequestMapping(path = "transfers/{id}")
     public Transfer get(@PathVariable int id) {
         return transferDao.getTransferById(id);
     }
-
-    //Send transfer
+    
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "transfers", method = RequestMethod.POST)
     public Transfer createTransfer(@RequestBody Transfer transfer) throws InsufficientFundsException {

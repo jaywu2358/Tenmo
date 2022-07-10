@@ -24,21 +24,14 @@ public class AccountController {
         this.userDao = userDao;
     }
 
-    //List all users
     @RequestMapping(path = "users")
     public List<User> listUsers() {
         return userDao.findAll();
     }
 
-    //Get account balance
     @RequestMapping(path = "account")
     public Account getAccountByUsername(Principal principal) {
         return accountDao.getAccountByUsername(principal.getName());
-    }
-
-    @RequestMapping(path = "account/user/{userId}")
-    public Account getAccountByUserId(@PathVariable int userId) {
-        return accountDao.getAccountByUserId(userId);
     }
 
     @RequestMapping(path = "username")

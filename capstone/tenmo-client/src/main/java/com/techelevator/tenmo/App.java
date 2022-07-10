@@ -110,7 +110,7 @@ public class App {
 
         while(menuSelection != 0) {
 
-            int currentUserId = accountService.getUserAccount().getUserId();
+            int currentUserId = currentUser.getUser().getId().intValue();
 
             Transfer[] transfers = transferService.listAllTransfers(currentUserId);
 
@@ -123,8 +123,12 @@ public class App {
 
             for (Transfer transfer : transfers) {
                 transferId = transfer.getTransferId();
+                int STATUS_PENDING = 1;
                 consoleService.printTransferHistory(transferId, transfer.getAccountFromUsername() + "/"
                         + transfer.getAccountToUsername(), transfer.getAmount());
+                if (transfer.getTransferStatusId() == STATUS_PENDING) {
+                    System.out.println("*Note: Transfer " + transferId + " is pending.");
+                }
             }
 
             System.out.println();
@@ -141,6 +145,8 @@ public class App {
             }
             if (!validTransferId && menuSelection != 0) {
                 consoleService.printInvalidSelectionError("transfer");
+            } else if (validTransferId) {
+                consoleService.pause();
             }
         }
     }
@@ -150,7 +156,7 @@ public class App {
 
         while (menuSelection != 0) {
 
-            int currentUserId = accountService.getUserAccount().getUserId();
+            int currentUserId = currentUser.getUser().getId().intValue();
             Integer transferId = null;
 
             Transfer[] transfers = transferService.listAllPendingTransfers(currentUserId, 1);
