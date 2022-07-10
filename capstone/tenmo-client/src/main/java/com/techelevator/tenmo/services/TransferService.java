@@ -30,7 +30,7 @@ public class TransferService {
     public Transfer[] listAllTransfers(int userId) {
         Transfer[] transfers = null;
         try {
-            ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl + "transfers?userId=" + userId,
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl + "transfers?userId=" + userId + "&transferStatusId=" + STATUS_APPROVED,
                     HttpMethod.GET, makeAuthEntity(), Transfer[].class);
             transfers = response.getBody();
 

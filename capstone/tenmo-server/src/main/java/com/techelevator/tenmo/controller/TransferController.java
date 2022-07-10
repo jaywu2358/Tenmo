@@ -51,7 +51,7 @@ public class TransferController {
     public Transfer get(@PathVariable int id) {
         return transferDao.getTransferById(id);
     }
-    
+
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "transfers", method = RequestMethod.POST)
     public Transfer createTransfer(@RequestBody Transfer transfer) throws InsufficientFundsException {
