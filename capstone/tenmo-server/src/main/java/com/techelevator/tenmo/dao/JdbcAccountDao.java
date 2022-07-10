@@ -59,7 +59,8 @@ public class JdbcAccountDao implements AccountDao {
     public Account getAccountByUsername(String username) {
 
         Account account = null;
-        String sql = "SELECT a.account_id, a.user_id, a.balance FROM account a JOIN tenmo_user ts ON a.user_id = ts.user_id WHERE ts.username = ?; ";
+        String sql = "SELECT a.account_id, a.user_id, a.balance FROM account a JOIN tenmo_user ts ON a.user_id = " +
+                "ts.user_id WHERE ts.username = ?; ";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
 
@@ -71,26 +72,25 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public void addToBalance(int accountId, BigDecimal amountReceived) {
+    public void addToBalance(Account recipientAccount, BigDecimal amountReceived) {
 
         String sql = "UPDATE account " +
                     "SET balance = balance + ? " +
                     "WHERE account_id = ?;";
-        jdbcTemplate.update(sql, amountReceived, accountId);
+        jdbcTemplate.update(sql, amountReceived, recipientAccount.getAccountId());
 
     }
 
     @Override
-    public void subtractFromBalance(int accountId, BigDecimal amountToSend) throws InsufficientFundsException {
+    public void subtractFromBalance(Account senderAccount, BigDecimal amountToSend) throws InsufficientFundsException {
 
-        Account account = getAccountByAccountId(accountId);
-        BigDecimal accountBalance = account.getBalance();
+        BigDecimal accountBalance = senderAccount.getBalance();
 
         if (accountBalance.compareTo(amountToSend) >= 0) {
             String sql = "UPDATE account " +
                     "SET balance = balance - ? " +
                     "WHERE account_id = ?;";
-            jdbcTemplate.update(sql, amountToSend, accountId);
+            jdbcTemplate.update(sql, amountToSend, senderAccount.getAccountId());
         } else {
             throw new InsufficientFundsException();
         }

@@ -16,41 +16,16 @@ public class TransferService {
     private String baseUrl;
     private final RestTemplate restTemplate = new RestTemplate();
     private String authToken = null;
+    private final int TYPE_REQUEST = 1;
+    private final int TYPE_SEND = 2;
+    private final int STATUS_PENDING = 1;
+    private final int STATUS_APPROVED = 2;
+    private final int STATUS_REJECTED = 3;
 
     public TransferService(String url, String authToken) {
         this.baseUrl = url;
         this.authToken = authToken;
     }
-
-//    public Transfer[] listAllTransfers(int userId, int transferTypeId, int transferStatusId) {
-//        Transfer[] transfers = null;
-//        try {
-//            if (transferStatusId == 0 && transferTypeId == 0) {
-//                ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl + "transfers?userId=" + userId,
-//                        HttpMethod.GET, makeAuthEntity(), Transfer[].class);
-//                transfers = response.getBody();
-//            }
-//            else if(transferTypeId > 0 && transferStatusId == 0) {
-//                ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl + "transfers?userId=" + userId
-//                                + "&transferTypeId=" + transferTypeId, HttpMethod.GET,
-//                        makeAuthEntity(), Transfer[].class);
-//                transfers = response.getBody();
-//            }
-//            else if(transferTypeId == 0 && transferStatusId > 0) {
-//                ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl + "transfers?userId=" + userId
-//                                + "&transferStatusId=" + transferStatusId, HttpMethod.GET,
-//                        makeAuthEntity(), Transfer[].class);
-//            }
-//            else {
-//                ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl + "transfers?userId=" + userId
-//                                +"&transferTypeId=" + transferTypeId +"&transferStatusId=" + transferStatusId, HttpMethod.GET,
-//                        makeAuthEntity(), Transfer[].class);
-//            }
-//        } catch (RestClientResponseException | ResourceAccessException e) {
-//            BasicLogger.log(e.getMessage());
-//        }
-//        return transfers;
-//    }
 
     public Transfer[] listAllTransfers(int userId) {
         Transfer[] transfers = null;
@@ -78,7 +53,6 @@ public class TransferService {
         return transfers;
     }
 
-
     public Transfer getTransferByTransferId(int transferId) {
         Transfer transfer = null;
         try {
@@ -92,24 +66,44 @@ public class TransferService {
     }
 
 
-    public boolean sendTransfer(Account senderAccount, Account recipientAccount, BigDecimal amountToSend) {
-        boolean success = false;
-
-        Transfer transferToSend = new Transfer(0, 2, "test", 2, "test", senderAccount.getAccountId(), "test", recipientAccount.getAccountId(), "test", amountToSend);
-
+    public Transfer sendTransfer(int userId, int recipientId, BigDecimal amountToSend) {
+        Transfer transferToSend = new Transfer(0, TYPE_SEND, "", STATUS_APPROVED,
+                "", userId, "", recipientId, "", amountToSend);
         Transfer returnedTransfer = null;
 
         try {
             returnedTransfer = restTemplate.postForObject(baseUrl + "transfers", makeTransferEntity(transferToSend), Transfer.class);
-            if (returnedTransfer != null) {
-                success = true;
-            }
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
 
-        return success;
+        return returnedTransfer;
+    }
 
+    public Transfer requestTransfer(int userId, int recipientId, BigDecimal amountToSend) {
+        Transfer transferToSend = new Transfer(0, TYPE_REQUEST, "", STATUS_PENDING,
+                "", userId, "", recipientId, "", amountToSend);
+        Transfer returnedTransfer = null;
+
+        try {
+            returnedTransfer = restTemplate.postForObject(baseUrl + "transfers", makeTransferEntity(transferToSend), Transfer.class);
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+
+        return returnedTransfer;
+    }
+
+    public Transfer approveOrRejectTransfer(Transfer transfer) {
+        Transfer updatedTransfer = null;
+        try {
+            restTemplate.put(baseUrl + "transfers", makeTransferEntity(transfer), Transfer.class);
+            updatedTransfer = getTransferByTransferId(transfer.getTransferId());
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+
+        return updatedTransfer;
     }
 
     private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {

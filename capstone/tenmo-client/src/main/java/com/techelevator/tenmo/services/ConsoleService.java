@@ -88,7 +88,7 @@ public class ConsoleService {
         scanner.nextLine();
     }
 
-    public void printUsers(User[] accounts) {
+    public void printUsers(User[] accounts, int currentUserId) {
         System.out.println("--------------------------------------------");
         System.out.println("Users");
         System.out.println("ID         NAME");
@@ -98,10 +98,19 @@ public class ConsoleService {
         String formatInfo = idFormat + " " + nameFormat + "\r\n";
 
         for (User user : accounts) {
-            System.out.format(formatInfo, user.getId(), user.getUsername());
+            if (user.getId() != currentUserId) {
+                System.out.format(formatInfo, user.getId(), user.getUsername());
+            }
         }
 
         System.out.println("---------\r\n");
+    }
+
+    public void printTransferHeading(String message) {
+        System.out.println("--------------------------------------------");
+        System.out.println(message);
+        System.out.println("ID         FROM/TO                    AMOUNT");
+        System.out.println("--------------------------------------------");
     }
 
     public void printTransferHistory(int id, String fromAndToAccount, BigDecimal amount) {
@@ -126,8 +135,20 @@ public class ConsoleService {
         System.out.println("Your current account balance is: $" + account.getBalance());
     }
 
+    public void printTransferApprovalOptions() {
+        System.out.print("1: Approve\r\n" +
+                "2: Reject\r\n" +
+                "0: Don't approve or reject\r\n" +
+                "---------\n");
+    }
+
     public void printErrorMessage() {
         System.out.println("An error occurred. Check the log for details.");
     }
 
+    public void printInvalidSelectionError(String word) {
+        System.out.println("--------------------------------------------------------------");
+        System.out.println("Invalid " + word + " id. Please enter a " + word + " ID from the list!");
+        System.out.println();
+    }
 }

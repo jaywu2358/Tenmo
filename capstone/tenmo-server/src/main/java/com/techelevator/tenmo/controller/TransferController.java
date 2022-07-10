@@ -19,8 +19,14 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 public class TransferController {
 
-    private TransferDao transferDao;
-    private AccountDao accountDao;
+    private final TransferDao transferDao;
+    private final AccountDao accountDao;
+
+    private final int TYPE_REQUEST = 1;
+    private final int TYPE_SEND = 2;
+    private final int STATUS_PENDING = 1;
+    private final int STATUS_APPROVED = 2;
+    private final int STATUS_REJECTED = 3;
 
     public TransferController(TransferDao transferDao, AccountDao accountDao) {
         this.transferDao = transferDao;
@@ -54,14 +60,37 @@ public class TransferController {
     public Transfer createTransfer(@RequestBody Transfer transfer) throws InsufficientFundsException {
 
         int senderAccountId = transfer.getAccountFromId();
-        accountDao.subtractFromBalance(senderAccountId, transfer.getAmount());
+        Account senderAccount = accountDao.getAccountByUserId(senderAccountId);
 
         int recipientAccountId = transfer.getAccountToId();
-        accountDao.addToBalance(recipientAccountId, transfer.getAmount());
+        Account recipientAccount = accountDao.getAccountByUserId(recipientAccountId);
+
+        if (transfer.getTransferStatusId() == STATUS_APPROVED) {
+            accountDao.subtractFromBalance(senderAccount, transfer.getAmount());
+            accountDao.addToBalance(recipientAccount, transfer.getAmount());
+        }
+
+        transfer.setAccountFromId(senderAccount.getAccountId());
+        transfer.setAccountToId(recipientAccount.getAccountId());
 
         transfer = transferDao.createTransfer(transfer);
 
         return transfer;
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @RequestMapping(path = "transfers", method = RequestMethod.PUT)
+    public void updateTransfer(@RequestBody Transfer transfer) throws InsufficientFundsException {
+
+        Account senderAccount = accountDao.getAccountByAccountId(transfer.getAccountFromId());
+        Account recipientAccount = accountDao.getAccountByAccountId(transfer.getAccountToId());
+
+        if (transfer.getTransferStatusId() == STATUS_APPROVED) {
+            accountDao.subtractFromBalance(senderAccount, transfer.getAmount());
+            accountDao.addToBalance(recipientAccount, transfer.getAmount());
+        }
+
+        transferDao.updateTransferStatus(transfer);
     }
 
 }
