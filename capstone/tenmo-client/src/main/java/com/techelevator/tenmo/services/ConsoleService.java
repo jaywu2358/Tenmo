@@ -106,6 +106,13 @@ public class ConsoleService {
         System.out.println("---------\r\n");
     }
 
+    public void printTransferHeading(String message) {
+        System.out.println("--------------------------------------------");
+        System.out.println(message);
+        System.out.println("ID         FROM/TO                    AMOUNT");
+        System.out.println("--------------------------------------------");
+    }
+
     public void printTransferHistory(int id, String fromAndToAccount, BigDecimal amount) {
         String idFormat = "%-10s";    // min 10 characters, left aligned
         String fromToFormat = "%-23s";  // min 25 characters, left aligned
@@ -126,6 +133,13 @@ public class ConsoleService {
 
     public void printAccountBalance(Account account) {
         System.out.println("Your current account balance is: $" + account.getBalance());
+    }
+
+    public void printTransferApprovalOptions() {
+        System.out.print("1: Approve\r\n" +
+                "2: Reject\r\n" +
+                "0: Don't approve or reject\r\n" +
+                "---------\n");
     }
 
     public void printErrorMessage() {

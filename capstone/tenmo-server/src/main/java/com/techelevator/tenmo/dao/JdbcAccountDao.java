@@ -59,7 +59,8 @@ public class JdbcAccountDao implements AccountDao {
     public Account getAccountByUsername(String username) {
 
         Account account = null;
-        String sql = "SELECT a.account_id, a.user_id, a.balance FROM account a JOIN tenmo_user ts ON a.user_id = ts.user_id WHERE ts.username = ?; ";
+        String sql = "SELECT a.account_id, a.user_id, a.balance FROM account a JOIN tenmo_user ts ON a.user_id = " +
+                "ts.user_id WHERE ts.username = ?; ";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
 

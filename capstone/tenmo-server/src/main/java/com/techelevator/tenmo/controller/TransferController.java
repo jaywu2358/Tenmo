@@ -22,6 +22,12 @@ public class TransferController {
     private final TransferDao transferDao;
     private final AccountDao accountDao;
 
+    private final int TYPE_REQUEST = 1;
+    private final int TYPE_SEND = 2;
+    private final int STATUS_PENDING = 1;
+    private final int STATUS_APPROVED = 2;
+    private final int STATUS_REJECTED = 3;
+
     public TransferController(TransferDao transferDao, AccountDao accountDao) {
         this.transferDao = transferDao;
         this.accountDao = accountDao;
@@ -55,11 +61,14 @@ public class TransferController {
 
         int senderAccountId = transfer.getAccountFromId();
         Account senderAccount = accountDao.getAccountByUserId(senderAccountId);
-        accountDao.subtractFromBalance(senderAccount, transfer.getAmount());
 
         int recipientAccountId = transfer.getAccountToId();
         Account recipientAccount = accountDao.getAccountByUserId(recipientAccountId);
-        accountDao.addToBalance(recipientAccount, transfer.getAmount());
+
+        if (transfer.getTransferStatusId() == STATUS_APPROVED) {
+            accountDao.subtractFromBalance(senderAccount, transfer.getAmount());
+            accountDao.addToBalance(recipientAccount, transfer.getAmount());
+        }
 
         transfer.setAccountFromId(senderAccount.getAccountId());
         transfer.setAccountToId(recipientAccount.getAccountId());
@@ -67,6 +76,21 @@ public class TransferController {
         transfer = transferDao.createTransfer(transfer);
 
         return transfer;
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @RequestMapping(path = "transfers", method = RequestMethod.PUT)
+    public void updateTransfer(@RequestBody Transfer transfer) throws InsufficientFundsException {
+
+        Account senderAccount = accountDao.getAccountByAccountId(transfer.getAccountFromId());
+        Account recipientAccount = accountDao.getAccountByAccountId(transfer.getAccountToId());
+
+        if (transfer.getTransferStatusId() == STATUS_APPROVED) {
+            accountDao.subtractFromBalance(senderAccount, transfer.getAmount());
+            accountDao.addToBalance(recipientAccount, transfer.getAmount());
+        }
+
+        transferDao.updateTransferStatus(transfer);
     }
 
 }

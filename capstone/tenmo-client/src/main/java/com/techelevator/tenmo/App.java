@@ -94,11 +94,10 @@ public class App {
             } else if (menuSelection == 0) {
                 continue;
             } else {
-                System.out.println("Invalid Selection");
+                System.out.println("Invalid selection");
             }
             consoleService.pause();
         }
-        System.out.println("Goodbye!");
     }
 
 	private void viewCurrentBalance() {
@@ -120,11 +119,7 @@ public class App {
                 break;
             }
 
-            System.out.println("--------------------------------------------");
-            System.out.println("Transfer History");
-            System.out.println();
-            System.out.println("ID         FROM/TO                    AMOUNT");
-            System.out.println("--------------------------------------------");
+            consoleService.printTransferHeading("Transfer History");
 
             for (Transfer transfer : transfers) {
                 transferId = transfer.getTransferId();
@@ -132,7 +127,6 @@ public class App {
                         + transfer.getAccountToUsername(), transfer.getAmount());
             }
 
-            //List details
             System.out.println();
             menuSelection = consoleService.promptForMenuSelection("Please enter transfer ID to view details (0 to cancel): ");
             boolean validTransferId = false;
@@ -151,12 +145,10 @@ public class App {
         }
     }
 
-
-    // Jay2
 	private void viewPendingRequests() {
         int menuSelection = -1;
 
-        while(menuSelection!= 0 ) {
+        while (menuSelection != 0) {
 
             int currentUserId = accountService.getUserAccount().getUserId();
             Integer transferId = null;
@@ -167,6 +159,8 @@ public class App {
                 System.out.println("There are no pending transfers.");
                 break;
             }
+
+            consoleService.printTransferHeading("Pending Transfers");
 
             for (Transfer transfer : transfers) {
                 transferId = transfer.getTransferId();
@@ -184,9 +178,23 @@ public class App {
                 if (transferId.equals(menuSelection)) {
                     validTransferId = true;
                     consoleService.printTransferDetails(transfer);
-                    consoleService.pause();
+
+                    if (transfer.getAccountToUsername().equals(currentUser.getUser().getUsername())) {
+                        consoleService.printTransferApprovalOptions();
+                        int selection = consoleService.promptForInt("Please choose an option: ");
+                        if (selection == 1 || selection == 2) {
+                            if (selection == 1) {
+                                transfer.setTransferStatusId(2);
+                            } else {
+                                transfer.setTransferStatusId(3);
+                            }
+                            Transfer returnedTransfer = transferService.approveOrRejectTransfer(transfer);
+                            consoleService.printTransferDetails(returnedTransfer);
+                        } else if (selection != 0) {
+                            System.out.println("Invalid selection");
+                        }
+                    }
                 }
-                // Removed else if because 0 will break while loop
             }
             if (!validTransferId && menuSelection != 0) {
                 consoleService.printInvalidSelectionError("transfer");
@@ -214,6 +222,7 @@ public class App {
             int recipientId = menuSelection;
 
             boolean isRecipientIdValid = false;
+
             if (recipientId == currentUserId) {
                 System.out.println("You can't send money to yourself.");
             } else if (recipientId == 0) {
@@ -225,24 +234,65 @@ public class App {
             }
 
             if (isRecipientIdValid) {
-                BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
-
-                Transfer transfer = transferService.sendTransfer(currentUserId, recipientId, amountToSend);
-                if (transfer != null) {
-                    consoleService.printTransferDetails(transfer);
-                } else {
-                    consoleService.printErrorMessage();
+                BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount (0 to cancel): ");
+                if (amountToSend.compareTo(BigDecimal.ZERO) < 0) {
+                    System.out.println("You must enter a positive value. Transaction canceled.");
+                } else if (amountToSend.compareTo(BigDecimal.ZERO) > 0) {
+                    Transfer transfer = transferService.sendTransfer(currentUserId, recipientId, amountToSend);
+                    if (transfer != null) {
+                        consoleService.printTransferDetails(transfer);
+                    }
                 }
                 break;
             }
         }
-
-
     }
 
-    // Optional Use Case -- Revisit when initial app is built
 	private void requestBucks() {
-		// TODO Auto-generated method stub
+        int menuSelection = -1;
+
+        while (menuSelection != 0) {
+            int currentUserId = currentUser.getUser().getId().intValue();
+            User[] users = accountService.listUsers();
+            if (users.length == 1) {
+                System.out.println("There are no other users registered.");
+                break;
+            }
+
+            List<Long> userIds = new ArrayList<>();
+            for (User user : users) {
+                userIds.add(user.getId());
+            }
+            consoleService.printUsers(users, currentUserId);
+            menuSelection = consoleService.promptForInt("Enter the user ID you'd like to request money from " +
+                    "(0 to cancel): ");
+            int recipientId = menuSelection;
+
+            boolean isRecipientIdValid = false;
+
+            if (recipientId == currentUserId) {
+                System.out.println("You can't request money from yourself.");
+            } else if (recipientId == 0) {
+                break;
+            } else if (userIds.contains((long) recipientId)) {
+                isRecipientIdValid = true;
+            } else {
+                consoleService.printInvalidSelectionError("user");
+            }
+
+            if (isRecipientIdValid) {
+                BigDecimal amountToRequest = consoleService.promptForBigDecimal("Enter amount (0 to cancel): ");
+                if (amountToRequest.compareTo(BigDecimal.ZERO) < 0) {
+                    System.out.println("You must enter a positive value. Transaction canceled.");
+                } else if (amountToRequest.compareTo(BigDecimal.ZERO) > 0) {
+                    Transfer transfer = transferService.requestTransfer(currentUserId, recipientId, amountToRequest);
+                    if (transfer != null) {
+                        consoleService.printTransferDetails(transfer);
+                    }
+                }
+                break;
+            }
+        }
 		
 	}
 

@@ -171,8 +171,8 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public void updateTransferStatus(Transfer transfer) {
-        String sql = "UPDATE transfers " +
-                    "SET transfer_status_id ? " +
+        String sql = "UPDATE transfer " +
+                    "SET transfer_status_id = ? " +
                     "WHERE transfer_id = ?; ";
         jdbcTemplate.update(sql,transfer.getTransferStatusId(),transfer.getTransferId());
     }
