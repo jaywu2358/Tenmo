@@ -114,7 +114,7 @@ public class ConsoleService {
             }
         }
 
-        System.out.println("---------\r\n");
+        System.out.println("--------------------------------------------\r\n");
     }
 
     public void printTransferHeading(String message) {
