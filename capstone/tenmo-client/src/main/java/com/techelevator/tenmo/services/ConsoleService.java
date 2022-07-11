@@ -72,6 +72,17 @@ public class ConsoleService {
         }
     }
 
+    public int promptForUserId(String prompt) {
+        System.out.print(prompt);
+        while (true) {
+            try {
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid user ID.");
+            }
+        }
+    }
+
     public BigDecimal promptForBigDecimal(String prompt) {
         System.out.print(prompt);
         while (true) {
@@ -144,6 +155,10 @@ public class ConsoleService {
 
     public void printErrorMessage() {
         System.out.println("An error occurred. Check the log for details.");
+    }
+
+    public void printInsufficientFundsMessage() {
+        System.out.println("You don't have enough money for this transaction.");
     }
 
     public void printInvalidSelectionError(String word) {
