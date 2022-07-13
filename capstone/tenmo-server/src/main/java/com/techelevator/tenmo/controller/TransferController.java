@@ -64,6 +64,7 @@ public class TransferController {
 
         if (transfer.getTransferStatusId() == STATUS_APPROVED) {
             accountDao.subtractFromBalance(senderAccount, transfer.getAmount());
+            //Check each action
             accountDao.addToBalance(recipientAccount, transfer.getAmount());
         }
 
@@ -88,6 +89,29 @@ public class TransferController {
         }
 
         transferDao.updateTransferStatus(transfer);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(path = "transfers/request", method = RequestMethod.POST)
+    public Transfer requestTransfer(@RequestBody Transfer transfer) throws InsufficientFundsException {
+
+        int senderAccountId = transfer.getAccountFromId();
+        Account senderAccount = accountDao.getAccountByUserId(senderAccountId);
+
+        int recipientAccountId = transfer.getAccountToId();
+        Account recipientAccount = accountDao.getAccountByUserId(recipientAccountId);
+
+        if (transfer.getTransferStatusId() == STATUS_APPROVED) {
+            accountDao.subtractFromBalance(recipientAccount, transfer.getAmount());
+            accountDao.addToBalance(senderAccount, transfer.getAmount());
+        }
+
+        transfer.setAccountFromId(senderAccount.getAccountId());
+        transfer.setAccountToId(recipientAccount.getAccountId());
+
+        transfer = transferDao.createTransfer(transfer);
+
+        return transfer;
     }
 
 }

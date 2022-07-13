@@ -86,7 +86,7 @@ public class TransferService {
         Transfer returnedTransfer = null;
 
         try {
-            returnedTransfer = restTemplate.postForObject(baseUrl + "transfers", makeTransferEntity(transferToSend), Transfer.class);
+            returnedTransfer = restTemplate.postForObject(baseUrl + "transfers/request", makeTransferEntity(transferToSend), Transfer.class);
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }

@@ -192,7 +192,9 @@ public class App {
                             if (selection == 1) {
                                 if (accountService.getUserAccount().getBalance().compareTo(transfer.getAmount()) > 0) {
                                     transfer.setTransferStatusId(2);
+                                    System.out.println("You have successfully approved this request!");
                                     Transfer returnedTransfer = transferService.approveOrRejectTransfer(transfer);
+                                    consoleService.pause();
                                     consoleService.printTransferDetails(returnedTransfer);
                                 } else {
                                     consoleService.printInsufficientFundsMessage();
@@ -209,7 +211,8 @@ public class App {
                             System.out.println("Invalid selection");
                         }
                     } else {
-                        System.out.println("You don't have the ability to approve/reject this transfer.");
+                        System.out.println("Please note that you don't have the ability to approve/reject this transfer.");
+                        consoleService.pause();
                     }
                 }
             }
@@ -263,6 +266,7 @@ public class App {
                     } else {
                         Transfer transfer = transferService.sendTransfer(currentUserId, recipientId, amountToSend);
                         if (transfer != null) {
+                            System.out.println("Transaction completed! Please see below for details.");
                             consoleService.printTransferDetails(transfer);
                         } else {
                             consoleService.printErrorMessage();
@@ -318,6 +322,9 @@ public class App {
                    } else {
                        Transfer transfer = transferService.requestTransfer(currentUserId, recipientId, amountToRequest);
                        if (transfer != null) {
+                           System.out.println("Request completed! You will receive the payment once it's approved.");
+                           System.out.println("Please see below for details.");
+                           consoleService.pause();
                            consoleService.printTransferDetails(transfer);
                        } else {
                            consoleService.printErrorMessage();
