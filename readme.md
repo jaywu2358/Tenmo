@@ -3,23 +3,23 @@
 <br />
 <div align="center">
   <a>
-    <img src="https://github.com/jaywu2358/Tenmo/assets/106934206/b28f60a4-da34-4630-9c94-e46f6bfbdbb5" height="200px"> 
+    <img src="https://github.com/jaywu2358/Tenmo/assets/106934206/036796cb-72b6-4d38-8cc8-3567b80b6d5e" height="200px"> 
+
   </a>
-<h1 align="center">Vending Machine - A console-based application</h1>
+<h1 align="center">Tenmo - A console-based backend application simplier version of Venmo</h1>
 
   <p align="center">
-    A console-based vending machine application that I developed from scratch.
+    A console-based backend money transfer application that I developed with my classmate. Not just a console-based application, it has a Spring boot server and APIs ready to connect to frontend. As well as a postgreSQL database connected to the server!
     </br>  
-    <a href="https://jaywu.netlify.app/">Click HERE to check out my portfolio</a>
+    
   </p>
 </div>
 
 <!-- ABOUT THE PROJECT -->
 <h1> About The Project </h1>
-<img src="https://github.com/jaywu2358/Tenmo/assets/106934206/1f98abb8-d001-4153-b7c4-dc5af5c8278c"> 
+<img src="https://github.com/jaywu2358/Tenmo/assets/106934206/fbae48e7-758e-4028-8839-abc7bbe7fd4a">
 
-This is the first project that I did in bootcamp. It takes in a text menu file, read it, and populate the vending machine with stcok and price information. It was really challenge to deal with float, int in Java but it was all worth it
-when I finished building the application and saw it running perfectly as intended. This is the moment that I knew software development is "my" thing!
+This is one of my favorite projects that I built in bootcamp. This backend application allows users to send money, receive payment, view transaction history, as well as approve/decline a money request transaction.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -28,7 +28,9 @@ when I finished building the application and saw it running perfectly as intende
 ### Built With
 
 * Java
-* Object-oriented programming
+* Spring Boot
+* RESTful APIs
+* PostgreSQL
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -36,21 +38,30 @@ when I finished building the application and saw it running perfectly as intende
 <!-- USAGE EXAMPLES -->
 ## KEY FEATURES
 
-1. Generate a menu from a text-based file. Insert each item into a dedicated slot and add stock and price information for each item.
-<img src="https://github.com/jaywu2358/Tenmo/assets/106934206/e628c7bb-b018-4642-8934-f7ce03ae2043"/>
+1. View your current balance 
+<img src="https://github.com/jaywu2358/Tenmo/assets/106934206/83547af1-d4a7-496d-8ce6-049a6d26862c"/>
+</br>
+</br>
+
+2. Send money to a user. Yes, we also built the overdraft try-catch!
+<img src="https://github.com/jaywu2358/Tenmo/assets/106934206/cc3d26bf-9ada-4f87-8b4c-2b51f3655133"/>
 
 </br>
 </br>
 
-2. Before you can purchase, you need to feed money first! We are not selling for free.
-<img src="https://github.com/jaywu2358/Tenmo/assets/106934206/76f216db-f551-4891-b962-d7b18e9cbed0"/>
-
+3. Request money from a user.
+<img src="https://github.com/jaywu2358/Tenmo/assets/106934206/4f365709-8a23-4cb0-8482-de1b73a87f6f"/>
 </br>
 </br>
 
-3. Select an item you want by entering the slot number. NOTE: I added the "not sufficient fund" try catch to make sure the user has enough money. You are also not allowed to purchase out-of-stock items or slots not in the machine!
-   When you purchase a corresponding type of item, you will receive a special message. In this showcase, since the buyer purchased a1(potato crips), the special message is "Crunch Crunch, Yum!"
-<img src="https://github.com/jaywu2358/Tenmo/assets/106934206/b980c269-87f5-42f8-9b7d-f81585beacb6" />
+4. The user who received the payment request has the option to approve or decline the transaction.
+<img src="https://github.com/jaywu2358/Tenmo/assets/106934206/aa0f6f3b-690c-45f6-a867-c7bd0ae986a0"/>
+</br>
+</br>
+
+5. Review your transaction history.
+<img src="https://github.com/jaywu2358/Tenmo/assets/106934206/0aade2a2-d7ff-40ae-8be5-60635882f912"/>
+
 
 </br>
 </br>
@@ -64,7 +75,7 @@ when I finished building the application and saw it running perfectly as intende
 
 Jay Wu - jaywu2358@gmail.com
 
-Project Link: [https://github.com/jaywu2358/Vending-Machine](https://github.com/jaywu2358/Vending-Machine)
+Project Link: [https://github.com/jaywu2358/Tenmo](https://github.com/jaywu2358/Tenmo)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
