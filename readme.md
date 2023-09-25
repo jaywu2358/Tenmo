@@ -6,10 +6,10 @@
     <img src="https://github.com/jaywu2358/Tenmo/assets/106934206/036796cb-72b6-4d38-8cc8-3567b80b6d5e" height="200px"> 
 
   </a>
-<h1 align="center">Tenmo - A console-based backend application simplier version of Venmo</h1>
+<h1 align="center">Tenmo - A console-based backend money transfer application</h1>
 
   <p align="center">
-    A console-based backend money transfer application that I developed with my classmate. Not just a console-based application, it has a Spring boot server and APIs ready to connect to frontend. As well as a postgreSQL database connected to the server!
+    A console-based backend money transfer application that I developed with my classmate. It is intended to be a simpler version of Venmo. This is NOT only a console-based application, it has a Spring boot server and APIs ready to connect to frontend. As well as a postgreSQL database connected to the server!
     </br>  
     
   </p>
@@ -19,7 +19,7 @@
 <h1> About The Project </h1>
 <img src="https://github.com/jaywu2358/Tenmo/assets/106934206/fbae48e7-758e-4028-8839-abc7bbe7fd4a">
 
-This is one of my favorite projects that I built in bootcamp. This backend application allows users to send money, receive payment, view transaction history, as well as approve/decline a money request transaction.
+This is one of my favorite projects that I built in bootcamp. This backend application allows users to send money, receive payment, view transaction history, and approve/decline a money request transaction.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
